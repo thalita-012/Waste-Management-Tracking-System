@@ -2,12 +2,12 @@
   "name": "waste-management-tracking-system",
   "version": "1.0.0",
   "description": "A waste management tracking system",
-  "main": "dist/server.js",
+  "main": "build/server.js",
   "type": "module",
   "scripts": {
     "build": "tsc",
-    "start": "node dist/server.js",
-    "dev": "nodemon --watch src --ext ts --exec \"npm run build && node dist/server.js\"",
+    "start": "node build/server.js",
+    "dev": "nodemon --watch src --ext ts --exec \"npm run build && node build/server.js\"",
     "watch": "tsc --watch"
   },
   "repository": {
@@ -26,11 +26,14 @@
   },
   "homepage": "https://github.com/thalita-012/Waste-Management-Tracking-System#readme",
   "dependencies": {
+    "@prisma/client": "^7.8.0",
     "bcrypt": "^6.0.0",
     "dotenv": "^16.6.1",
     "express": "^4.22.2",
     "jsonwebtoken": "^9.0.3",
-    "pg": "^8.21.0"
+    "pg": "^8.21.0",
+    "prisma": "^7.8.0",
+    "socket.io": "^4.8.1"
   },
   "devDependencies": {
     "@types/bcrypt": "^6.0.0",
