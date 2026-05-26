@@ -14,7 +14,11 @@
     "type": "git",
     "url": "git+https://github.com/thalita-012/Waste-Management-Tracking-System.git"
   },
-  "keywords": ["waste", "management", "tracking"],
+  "keywords": [
+    "waste",
+    "management",
+    "tracking"
+  ],
   "author": "thalita-012",
   "license": "ISC",
   "bugs": {
@@ -23,7 +27,8 @@
   "homepage": "https://github.com/thalita-012/Waste-Management-Tracking-System#readme",
   "dependencies": {
     "dotenv": "^16.4.7",
-    "express": "^4.18.2"
+    "express": "^4.18.2",
+    "socket.io": "^4.8.3"
   },
   "devDependencies": {
     "@types/express": "^4.17.21",
