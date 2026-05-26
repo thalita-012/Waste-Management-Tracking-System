@@ -1,16 +1,30 @@
-// import express from "express";
-// const app = express();
-// app.use(express.json());
-// const PORT = 3000;
-// app.listen(PORT, () => {
-//   console.log(`Server is running on port ${PORT}`);
-// });
 import express from 'express';
-import paymentRoutes from './routes/paymentRoute.ts';
+import paymentRoutes from './routes/paymentRoute.js';
+import { testConnection } from './config/db.js';
+import { errorMiddleware } from './middlewares/ErrorMiddleware.js';
 const app = express();
 app.use(express.json());
+app.use(express.static('public'));
 app.use('/api/payments', paymentRoutes);
-app.listen(3000, () => {
-    console.log('Server running on port 3000');
+app.get('/health', (_req, res) => {
+    res.json({
+        success: true,
+        message: 'Server is running',
+    });
 });
+app.get('/db-test', async (_req, res) => {
+    const connected = await testConnection();
+    if (!connected) {
+        return res.status(500).json({
+            success: false,
+            message: 'Database connection failed',
+        });
+    }
+    return res.json({
+        success: true,
+        message: 'Database connected successfully',
+    });
+});
+app.use(errorMiddleware);
+export default app;
 //# sourceMappingURL=app.js.map

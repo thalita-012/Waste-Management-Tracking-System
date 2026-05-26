@@ -1,40 +1,14 @@
-import mongoose, { Schema, Document } from 'mongoose';
+export type PaymentStatus = 'PENDING' | 'PAID' | 'FAILED';
 
-export interface IPayment extends Document {
+export type Payment = {
+  id: number;
   orderId: string;
   amount: number;
   currency: string;
-  qrString?: string;
-  bakongTxId?: string;
-  status: 'PENDING' | 'PAID' | 'FAILED';
+  qrString: string | null;
+  khqrMd5: string | null;
+  bakongTxId: string | null;
+  status: PaymentStatus;
   createdAt: Date;
-}
-
-const PaymentSchema = new Schema<IPayment>(
-  {
-    orderId: {
-      type: String,
-      required: true,
-    },
-    amount: {
-      type: Number,
-      required: true,
-    },
-    currency: {
-      type: String,
-      default: 'KHR',
-    },
-    qrString: String,
-    bakongTxId: String,
-    status: {
-      type: String,
-      enum: ['PENDING', 'PAID', 'FAILED'],
-      default: 'PENDING',
-    },
-  },
-  {
-    timestamps: true,
-  }
-);
-
-export default mongoose.model<IPayment>('Payment', PaymentSchema);
+  updatedAt: Date;
+};
