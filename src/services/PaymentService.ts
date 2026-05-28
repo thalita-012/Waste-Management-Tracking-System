@@ -174,18 +174,20 @@ export class PaymentService {
     const merchantName = this.limitKhqrText(this.getRequiredEnv('BAKONG_MERCHANT_NAME'), 25);
     const merchantCity = this.limitKhqrText(process.env.BAKONG_MERCHANT_CITY || 'Phnom Penh', 15);
     const currencyValue = currency === 'USD' ? khqrData.currency.usd : khqrData.currency.khr;
-    const merchantId = process.env.BAKONG_MERCHANT_ID;
-    const acquiringBank = process.env.BAKONG_ACQUIRING_BANK;
+    const accountInformation = this.getOptionalEnv('BAKONG_ACCOUNT_INFORMATION');
+    const merchantId = this.getOptionalEnv('BAKONG_MERCHANT_ID');
+    const acquiringBank = this.getOptionalEnv('BAKONG_ACQUIRING_BANK');
+    this.validateKhqrMerchantConfig(merchantId, acquiringBank);
     const isMerchantQr = Boolean(merchantId && acquiringBank);
 
     const optionalData = {
       currency: currencyValue,
-      accountInformation: process.env.BAKONG_ACCOUNT_INFORMATION,
+      accountInformation,
       billNumber: this.limitKhqrText(orderId, 25),
       storeLabel: merchantName,
       terminalLabel: 'Backend',
       merchantCategoryCode: '5999',
-      ...(isMerchantQr ? this.getDynamicPaymentFields(amount) : {}),
+      ...this.getDynamicPaymentFields(amount),
     };
 
     const khqr = new BakongKHQR();
@@ -254,7 +256,7 @@ export class PaymentService {
   }
 
   private getRequiredEnv(name: string) {
-    const value = process.env[name];
+    const value = this.getOptionalEnv(name);
 
     if (!value) {
       logger.error('Missing required environment variable', { variable: name });
@@ -262,6 +264,18 @@ export class PaymentService {
     }
 
     return value;
+  }
+
+  private getOptionalEnv(name: string) {
+    return process.env[name]?.trim() || undefined;
+  }
+
+  private validateKhqrMerchantConfig(merchantId?: string, acquiringBank?: string) {
+    if ((merchantId && !acquiringBank) || (!merchantId && acquiringBank)) {
+      throw new Error(
+        'BAKONG_MERCHANT_ID and BAKONG_ACQUIRING_BANK must both be set for merchant QR, or both be empty for individual QR',
+      );
+    }
   }
 
   private limitKhqrText(value: string, maxLength: number) {

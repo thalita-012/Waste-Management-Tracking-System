@@ -61,6 +61,13 @@ export class PaymentController {
         });
       }
 
+      if (error.message.includes('BAKONG_') || error.message.includes('KHQR') || error.message.includes('Bakong')) {
+        return res.status(400).json({
+          success: false,
+          message: error.message,
+        });
+      }
+
       return res.status(500).json({
         success: false,
         message: 'Failed to create payment. Please try again later.',
