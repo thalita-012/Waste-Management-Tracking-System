@@ -1,1 +1,5 @@
+<<<<<<< HEAD
 {"version":3,"file":"ErrorMiddleware.d.ts","sourceRoot":"","sources":["../../src/middlewares/ErrorMiddleware.ts"],"names":[],"mappings":"AAAA,OAAO,EAAE,KAAK,OAAO,EAAE,KAAK,QAAQ,EAAE,KAAK,YAAY,EAAE,MAAM,SAAS,CAAC;AAEzE,eAAO,MAAM,eAAe,GAC1B,KAAK,GAAG,EACR,KAAK,OAAO,EACZ,KAAK,QAAQ,EACb,MAAM,YAAY,SAWnB,CAAC"}
+=======
+{"version":3,"file":"ErrorMiddleware.d.ts","sourceRoot":"","sources":["../../src/middlewares/ErrorMiddleware.ts"],"names":[],"mappings":""}
+>>>>>>> b7808adb37a07e5f45a60d6aaf8cba3683e41758

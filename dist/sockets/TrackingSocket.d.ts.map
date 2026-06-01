@@ -1,1 +1,5 @@
+<<<<<<< HEAD
 {"version":3,"file":"TrackingSocket.d.ts","sourceRoot":"","sources":["../../src/sockets/TrackingSocket.ts"],"names":[],"mappings":""}
+=======
+{"version":3,"file":"TrackingSocket.d.ts","sourceRoot":"","sources":["../../src/sockets/TrackingSocket.ts"],"names":[],"mappings":"AAAA,OAAO,KAAK,EAAE,MAAM,EAAU,MAAM,WAAW,CAAC;AAMhD,eAAO,MAAM,cAAc,GAAI,IAAI,MAAM,KAAG,IA4E3C,CAAC"}
+>>>>>>> b7808adb37a07e5f45a60d6aaf8cba3683e41758

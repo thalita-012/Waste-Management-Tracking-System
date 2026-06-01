@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 type BakongCheckResponse = {
     responseCode?: number;
     responseMessage?: string;
@@ -25,10 +26,25 @@ export declare class PaymentService {
         createdAt: Date;
         updatedAt: Date;
         id: number;
+=======
+export declare class PaymentService {
+    private paymentRepo;
+    createBakongPayment(orderId: string, amount: number): Promise<{
+        id: string;
+        orderId: string;
+        amount: number;
+        currency: string;
+        qrString?: string;
+        bakongTxId?: string;
+        status: string;
+        createdAt: Date;
+        updatedAt: Date;
+>>>>>>> b7808adb37a07e5f45a60d6aaf8cba3683e41758
     }>;
     verifyPayment(orderId: string): Promise<{
         orderId: string;
         paid: boolean;
+<<<<<<< HEAD
         status: string;
         bakong: null;
         payment: {
@@ -92,4 +108,8 @@ export declare class PaymentService {
     private getDynamicPaymentFields;
 }
 export {};
+=======
+    }>;
+}
+>>>>>>> b7808adb37a07e5f45a60d6aaf8cba3683e41758
 //# sourceMappingURL=PaymentService.d.ts.map

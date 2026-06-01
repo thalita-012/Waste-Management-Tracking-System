@@ -1,4 +1,8 @@
+<<<<<<< HEAD
 import { prisma } from '../utils/prisma.js';
+=======
+import { prisma } from '../utils/prisma';
+>>>>>>> b7808adb37a07e5f45a60d6aaf8cba3683e41758
 export class PaymentRepository {
     async create(data) {
         return await prisma.payment.create({
@@ -22,6 +26,7 @@ export class PaymentRepository {
             },
         });
     }
+<<<<<<< HEAD
     async markPaid(orderId, bakongTxId) {
         return await prisma.payment.update({
             where: {
@@ -59,6 +64,8 @@ export class PaymentRepository {
             }).then(p => p);
         });
     }
+=======
+>>>>>>> b7808adb37a07e5f45a60d6aaf8cba3683e41758
     async saveBakongTx(orderId, bakongTxId) {
         return await prisma.payment.update({
             where: {

@@ -1,1 +1,5 @@
+<<<<<<< HEAD
 {"version":3,"file":"paymentRoute.d.ts","sourceRoot":"","sources":["../../src/routes/paymentRoute.ts"],"names":[],"mappings":"AAGA,QAAA,MAAM,MAAM,4CAAW,CAAC;AASxB,eAAe,MAAM,CAAC"}
+=======
+{"version":3,"file":"paymentRoute.d.ts","sourceRoot":"","sources":["../../src/routes/paymentRoute.ts"],"names":[],"mappings":"AAGA,QAAA,MAAM,MAAM,4CAAW,CAAC;AAMxB,eAAe,MAAM,CAAC"}
+>>>>>>> b7808adb37a07e5f45a60d6aaf8cba3683e41758

@@ -1,1 +1,5 @@
+<<<<<<< HEAD
 {"version":3,"file":"AuthController.d.ts","sourceRoot":"","sources":["../../src/controllers/AuthController.ts"],"names":[],"mappings":"AACA,OAAO,EAAE,CAAC"}
+=======
+{"version":3,"file":"AuthController.d.ts","sourceRoot":"","sources":["../../src/controllers/AuthController.ts"],"names":[],"mappings":""}
+>>>>>>> b7808adb37a07e5f45a60d6aaf8cba3683e41758

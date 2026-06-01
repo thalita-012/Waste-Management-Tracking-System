@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 import {} from 'express';
 import QRCode from 'qrcode';
 import { PaymentService } from '../services/PaymentService.js';
@@ -27,10 +28,37 @@ export class PaymentController {
             }
             catch (error) {
                 return this.handleCreatePaymentError(req, res, error);
+=======
+import { PaymentService } from "../services/PaymentService";
+export class PaymentController {
+    constructor() {
+        this.paymentService = new PaymentService();
+        this.createPayment = async (req, res) => {
+            try {
+                const { orderId, amount } = req.body;
+                if (typeof orderId !== "string" || orderId.trim().length === 0) {
+                    return res.status(400).json({ success: false, message: "orderId is required" });
+                }
+                if (typeof amount !== "number" || !Number.isFinite(amount) || amount <= 0) {
+                    return res.status(400).json({ success: false, message: "amount must be a positive number" });
+                }
+                const payment = await this.paymentService.createBakongPayment(orderId, amount);
+                return res.status(201).json({
+                    success: true,
+                    data: payment,
+                });
+            }
+            catch (error) {
+                return res.status(500).json({
+                    success: false,
+                    message: error instanceof Error ? error.message : "Internal server error",
+                });
+>>>>>>> b7808adb37a07e5f45a60d6aaf8cba3683e41758
             }
         };
         this.verifyPayment = async (req, res) => {
             try {
+<<<<<<< HEAD
                 const orderId = this.getOrderIdParam(req);
                 const validation = this.validateOrderId(orderId);
                 if (this.hasValidationError(validation)) {
@@ -88,10 +116,20 @@ export class PaymentController {
                 const result = await this.paymentService.checkConfiguredBakongAccount();
                 return res.status(200).json({
                     success: true,
+=======
+                const { orderId } = req.params;
+                if (typeof orderId !== "string" || orderId.trim().length === 0) {
+                    return res.status(400).json({ success: false, message: "orderId is required" });
+                }
+                const result = await this.paymentService.verifyPayment(orderId);
+                return res.status(200).json({
+                    success: true,
+>>>>>>> b7808adb37a07e5f45a60d6aaf8cba3683e41758
                     data: result,
                 });
             }
             catch (error) {
+<<<<<<< HEAD
                 const message = this.getErrorMessage(error);
                 logger.error('Bakong account check error', {
                     error: message,
@@ -216,6 +254,14 @@ export class PaymentController {
     }
     getErrorMessage(error) {
         return error instanceof Error ? error.message : String(error);
+=======
+                return res.status(500).json({
+                    success: false,
+                    message: error instanceof Error ? error.message : "Internal server error",
+                });
+            }
+        };
+>>>>>>> b7808adb37a07e5f45a60d6aaf8cba3683e41758
     }
 }
 //# sourceMappingURL=PaymentController.js.map

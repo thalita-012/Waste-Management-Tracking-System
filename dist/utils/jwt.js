@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 import jwt, {} from 'jsonwebtoken';
 const JWT_SECRET = process.env.JWT_SECRET || 'your_fallback_secret';
 export const generateToken = (payload, expiresIn = '1d') => {
@@ -11,4 +12,7 @@ export const verifyToken = (token) => {
         return null;
     }
 };
+=======
+export {};
+>>>>>>> b7808adb37a07e5f45a60d6aaf8cba3683e41758
 //# sourceMappingURL=jwt.js.map

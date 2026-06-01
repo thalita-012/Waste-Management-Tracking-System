@@ -1,12 +1,17 @@
+<<<<<<< HEAD
 import { createRequire } from 'node:module';
 import { PaymentRepository } from '../repositories/PaymentRepository.js';
 import { logger } from '../utils/logger.js';
 const require = createRequire(import.meta.url);
 const { BakongKHQR, IndividualInfo, MerchantInfo, khqrData } = require('bakong-khqr');
+=======
+import { PaymentRepository } from "../repositories/PaymentRepository";
+>>>>>>> b7808adb37a07e5f45a60d6aaf8cba3683e41758
 export class PaymentService {
     constructor() {
         this.paymentRepo = new PaymentRepository();
     }
+<<<<<<< HEAD
     async createBakongPayment(orderId, amount, currency = 'KHR') {
         if (!orderId || !amount) {
             throw new Error('orderId and amount are required');
@@ -28,11 +33,56 @@ export class PaymentService {
             status: 'PENDING',
         });
         logger.info('Payment created successfully', { orderId, paymentId: payment.id });
+=======
+    async createBakongPayment(orderId, amount) {
+        const apiUrl = process.env.BAKONG_API_URL;
+        const apiKey = process.env.BAKONG_API_KEY;
+        const merchantId = process.env.BAKONG_MERCHANT_ID;
+        if (!apiUrl || !apiKey || !merchantId) {
+            throw new Error("Missing Bakong env vars: BAKONG_API_URL, BAKONG_API_KEY, BAKONG_MERCHANT_ID");
+        }
+        // Example payload
+        const payload = {
+            merchantId,
+            amount,
+            currency: 'KHR',
+            reference: orderId,
+        };
+        // Call Bakong API
+        const response = await fetch(apiUrl, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                Authorization: `Bearer ${apiKey}`,
+            },
+            body: JSON.stringify(payload),
+        });
+        if (!response.ok) {
+            const errorBody = await response.text().catch(() => "");
+            throw new Error(`Bakong create payment failed (${response.status}): ${errorBody}`);
+        }
+        const responseBody = await response.json();
+        const qrString = typeof responseBody === "object" && responseBody !== null && "qrString" in responseBody
+            ? responseBody.qrString
+            : undefined;
+        if (typeof qrString !== "string" || qrString.length === 0) {
+            throw new Error("Bakong response missing qrString");
+        }
+        // Save payment record
+        const payment = await this.paymentRepo.create({
+            orderId,
+            amount,
+            currency: 'KHR',
+            qrString,
+            status: 'PENDING',
+        });
+>>>>>>> b7808adb37a07e5f45a60d6aaf8cba3683e41758
         return payment;
     }
     async verifyPayment(orderId) {
         const payment = await this.paymentRepo.findByOrderId(orderId);
         if (!payment) {
+<<<<<<< HEAD
             logger.warn('Payment not found', { orderId });
             throw new Error('Payment not found');
         }
@@ -186,6 +236,37 @@ export class PaymentService {
         return {
             amount,
             expirationTimestamp: Date.now() + expirationMinutes * 60 * 1000,
+=======
+            throw new Error('Payment not found');
+        }
+        const apiUrl = process.env.BAKONG_API_URL;
+        const apiKey = process.env.BAKONG_API_KEY;
+        if (!apiUrl || !apiKey) {
+            throw new Error("Missing Bakong env vars: BAKONG_API_URL, BAKONG_API_KEY");
+        }
+        // Example verification request
+        const response = await fetch(`${apiUrl}/check/${encodeURIComponent(orderId)}`, {
+            method: "GET",
+            headers: {
+                Authorization: `Bearer ${apiKey}`,
+            },
+        });
+        if (!response.ok) {
+            const errorBody = await response.text().catch(() => "");
+            throw new Error(`Bakong verify payment failed (${response.status}): ${errorBody}`);
+        }
+        const responseBody = await response.json();
+        const status = typeof responseBody === "object" && responseBody !== null && "status" in responseBody
+            ? responseBody.status
+            : undefined;
+        const isPaid = status === "PAID";
+        if (isPaid) {
+            await this.paymentRepo.updateStatus(orderId, 'PAID');
+        }
+        return {
+            orderId,
+            paid: isPaid,
+>>>>>>> b7808adb37a07e5f45a60d6aaf8cba3683e41758
         };
     }
 }
