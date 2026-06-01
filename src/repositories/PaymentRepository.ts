@@ -45,7 +45,6 @@ export class PaymentRepository {
     });
   }
 
-  // ✅ NEW METHOD: Conditional update to prevent race conditions
   async markPaidConditional(orderId: string, expectedStatus: string, bakongTxId?: string) {
     // Only update if status is still in the expected state (PENDING)
     return await prisma.payment.updateMany({

@@ -64,7 +64,7 @@ export class PaymentService {
       throw new Error('orderId and amount are required');
     }
 
-    // ✅ STEP 4: Check if payment already exists (idempotency)
+    // Check if payment already exists (idempotency)
     const existingPayment = await this.paymentRepo.findByOrderId(orderId);
     if (existingPayment) {
       logger.info('Payment already exists for orderId, returning existing', { orderId });
@@ -100,7 +100,7 @@ export class PaymentService {
       throw new Error('Payment does not have a KHQR MD5 value');
     }
 
-    // ✅ Don't verify if already paid
+    // Don't verify if already paid
     if (payment.status === 'PAID') {
       logger.info('Payment already paid, skipping verification', { orderId });
       return {
@@ -117,7 +117,7 @@ export class PaymentService {
     const paid = this.isPaidResponse(bakongStatus);
     const transactionId = this.getTransactionId(bakongStatus);
 
-    // ✅ STEP 3: Fix race condition with conditional update
+    // Fix race condition with conditional update
     // Only update if still PENDING to prevent duplicate marking
     let updatedPayment = payment;
     if (paid && payment.status === 'PENDING') {

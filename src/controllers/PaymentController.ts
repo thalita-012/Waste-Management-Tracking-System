@@ -4,100 +4,85 @@ import { PaymentService } from '../services/PaymentService.js';
 import { PaymentValidator } from '../utils/validators.js';
 import { logger } from '../utils/logger.js';
 
+type PaymentCurrency = 'KHR' | 'USD';
+
+type CreatePaymentBody = {
+  orderId: string | undefined;
+  amount?: unknown;
+  currency: string | undefined;
+};
+
+type CreatePaymentCommand = {
+  orderId: string;
+  amount: number;
+  currency: PaymentCurrency;
+};
+
+type ValidationResult = {
+  isValid: boolean;
+  errors: string[];
+};
+
+type SafePaymentSource = {
+  id: number;
+  orderId: string;
+  amount: number;
+  currency: string;
+  qrString: string | null;
+  status: string;
+  createdAt: Date;
+};
+
 export class PaymentController {
-  private paymentService = new PaymentService();
+  constructor(private readonly paymentService = new PaymentService()) {}
 
   createPayment = async (req: Request, res: Response) => {
     try {
-      const { orderId, amount, currency } = req.body;
+      const input = this.getCreatePaymentInput(req);
+      const validation = this.validateCreatePaymentInput(input);
 
-      // ✅ STEP 1: Validate input
-      const validation = PaymentValidator.validateCreatePayment(orderId, amount, currency || 'KHR');
-      if (!validation.isValid) {
+      if (this.hasValidationError(validation)) {
         logger.warn('Payment creation validation failed', {
-          orderId,
+          orderId: input.orderId,
           errors: validation.errors,
         });
-        return res.status(400).json({
-          success: false,
-          message: 'Validation error',
-          errors: validation.errors,
-        });
+        return this.sendValidationError(res, validation);
       }
 
-      logger.info('Creating payment', { orderId, amount, currency });
+      const command = this.toCreatePaymentCommand(input);
+      logger.info('Creating payment', command);
 
-      const normalizedCurrency = (currency || 'KHR').toUpperCase() as 'KHR' | 'USD';
       const payment = await this.paymentService.createBakongPayment(
-        orderId,
-        Number(amount),
-        normalizedCurrency
+        command.orderId,
+        command.amount,
+        command.currency,
       );
 
-      // ✅ STEP 5: Return only safe data (no khqrMd5, bakongTxId)
       return res.status(201).json({
         success: true,
-        data: {
-          id: payment.id,
-          orderId: payment.orderId,
-          amount: payment.amount,
-          currency: payment.currency,
-          qrString: payment.qrString,
-          status: payment.status,
-          createdAt: payment.createdAt,
-        },
+        data: this.toSafePaymentResponse(payment),
       });
-    } catch (error: any) {
-      // ✅ STEP 2: Handle specific errors with proper status codes
-      logger.error('Payment creation error', {
-        orderId: req.body.orderId,
-        error: error.message,
-      });
-
-      if (error.message.includes('already exists')) {
-        return res.status(409).json({
-          success: false,
-          message: 'Payment already exists for this order',
-        });
-      }
-
-      if (error.message.includes('BAKONG_') || error.message.includes('KHQR') || error.message.includes('Bakong')) {
-        return res.status(400).json({
-          success: false,
-          message: error.message,
-        });
-      }
-
-      return res.status(500).json({
-        success: false,
-        message: 'Failed to create payment. Please try again later.',
-      });
+    } catch (error: unknown) {
+      return this.handleCreatePaymentError(req, res, error);
     }
   };
 
   verifyPayment = async (req: Request, res: Response) => {
     try {
-      const { orderId } = req.params;
+      const orderId = this.getOrderIdParam(req);
+      const validation = this.validateOrderId(orderId);
 
-      // ✅ STEP 1: Validate input
-      const validation = PaymentValidator.validateVerifyPayment(orderId || '');
-      if (!validation.isValid) {
+      if (this.hasValidationError(validation)) {
         logger.warn('Payment verification validation failed', {
           orderId,
           errors: validation.errors,
         });
-        return res.status(400).json({
-          success: false,
-          message: 'Validation error',
-          errors: validation.errors,
-        });
+        return this.sendValidationError(res, validation);
       }
 
       logger.info('Verifying payment', { orderId });
 
-      const result = await this.paymentService.verifyPayment(orderId || '');
-
-      // ✅ STEP 5: Return only safe data
+      const result = await this.paymentService.verifyPayment(orderId);
       return res.status(200).json({
         success: true,
         data: {
@@ -106,41 +91,27 @@ export class PaymentController {
           status: result.status,
         },
       });
-    } catch (error: any) {
-      // ✅ STEP 2: Handle specific errors with proper status codes
-      logger.error('Payment verification error', {
-        orderId: req.params.orderId,
-        error: error.message,
-      });
-
-      if (error.message.includes('not found')) {
-        return res.status(404).json({
-          success: false,
-          message: 'Payment not found for this order',
-        });
-      }
-
-      return res.status(500).json({
-        success: false,
-        message: 'Failed to verify payment. Please try again later.',
-      });
+    } catch (error: unknown) {
+      return this.handlePaymentLookupError(
+        req,
+        res,
+        error,
+        'Payment verification error',
+        'Failed to verify payment. Please try again later.',
+      );
     }
   };
 
   getPaymentQr = async (req: Request, res: Response) => {
     try {
-      const { orderId } = req.params;
+      const orderId = this.getOrderIdParam(req);
+      const validation = this.validateOrderId(orderId);
 
-      const validation = PaymentValidator.validateVerifyPayment(orderId || '');
-      if (!validation.isValid) {
-        return res.status(400).json({
-          success: false,
-          message: 'Validation error',
-          errors: validation.errors,
-        });
+      if (this.hasValidationError(validation)) {
+        return this.sendValidationError(res, validation);
       }
 
-      const payment = await this.paymentService.getPaymentByOrderId(orderId || '');
+      const payment = await this.paymentService.getPaymentByOrderId(orderId);
 
       if (!payment.qrString) {
         return res.status(404).json({
@@ -159,23 +130,14 @@ export class PaymentController {
       res.setHeader('Content-Type', 'image/png');
       res.setHeader('Cache-Control', 'no-store');
       return res.status(200).send(qrPng);
-    } catch (error: any) {
-      logger.error('Payment QR generation error', {
-        orderId: req.params.orderId,
-        error: error.message,
-      });
-
-      if (error.message.includes('not found')) {
-        return res.status(404).json({
-          success: false,
-          message: 'Payment not found for this order',
-        });
-      }
-
-      return res.status(500).json({
-        success: false,
-        message: 'Failed to generate QR code. Please try again later.',
-      });
+    } catch (error: unknown) {
+      return this.handlePaymentLookupError(
+        req,
+        res,
+        error,
+        'Payment QR generation error',
+        'Failed to generate QR code. Please try again later.',
+      );
     }
   };
 
@@ -187,14 +149,16 @@ export class PaymentController {
         success: true,
         data: result,
       });
-    } catch (error: any) {
+    } catch (error: unknown) {
+      const message = this.getErrorMessage(error);
+
       logger.error('Bakong account check error', {
-        error: error.message,
+        error: message,
       });
 
       return res.status(500).json({
         success: false,
-        message: error.message || 'Failed to check Bakong account',
+        message: message || 'Failed to check Bakong account',
       });
     }
   };
@@ -208,15 +172,138 @@ export class PaymentController {
         success: true,
         data: result,
       });
-    } catch (error: any) {
+    } catch (error: unknown) {
+      const message = this.getErrorMessage(error);
+
       logger.error('KHQR decode error', {
-        error: error.message,
+        error: message,
       });
 
       return res.status(400).json({
         success: false,
-        message: error.message || 'Failed to decode KHQR',
+        message: message || 'Failed to decode KHQR',
       });
     }
   };
+
+  private getCreatePaymentInput(req: Request): CreatePaymentBody {
+    const { orderId, amount, currency } = req.body as CreatePaymentBody;
+
+    return {
+      orderId,
+      amount,
+      currency,
+    };
+  }
+
+  private getOrderIdParam(req: Request) {
+    return req.params.orderId || '';
+  }
+
+  private validateCreatePaymentInput(input: CreatePaymentBody): ValidationResult {
+    return PaymentValidator.validateCreatePayment(input.orderId || '', input.amount, input.currency || 'KHR');
+  }
+
+  private validateOrderId(orderId: string): ValidationResult {
+    return PaymentValidator.validateVerifyPayment(orderId);
+  }
+
+  private toCreatePaymentCommand(input: CreatePaymentBody): CreatePaymentCommand {
+    return {
+      orderId: input.orderId || '',
+      amount: Number(input.amount),
+      currency: this.normalizeCurrency(input.currency),
+    };
+  }
+
+  private hasValidationError(validation: ValidationResult) {
+    return !validation.isValid;
+  }
+
+  private normalizeCurrency(currency?: string): PaymentCurrency {
+    return (currency || 'KHR').toUpperCase() as PaymentCurrency;
+  }
+
+  private toSafePaymentResponse(payment: SafePaymentSource) {
+    return {
+      id: payment.id,
+      orderId: payment.orderId,
+      amount: payment.amount,
+      currency: payment.currency,
+      qrString: payment.qrString,
+      status: payment.status,
+      createdAt: payment.createdAt,
+    };
+  }
+
+  private sendValidationError(res: Response, validation: ValidationResult) {
+    return res.status(400).json({
+      success: false,
+      message: 'Validation error',
+      errors: validation.errors,
+    });
+  }
+
+  private handleCreatePaymentError(req: Request, res: Response, error: unknown) {
+    const message = this.getErrorMessage(error);
+
+    logger.error('Payment creation error', {
+      orderId: (req.body as CreatePaymentBody).orderId,
+      error: message,
+    });
+
+    if (message.includes('already exists')) {
+      return res.status(409).json({
+        success: false,
+        message: 'Payment already exists for this order',
+      });
+    }
+
+    if (this.isBakongError(message)) {
+      return res.status(400).json({
+        success: false,
+        message,
+      });
+    }
+
+    return res.status(500).json({
+      success: false,
+      message: 'Failed to create payment. Please try again later.',
+    });
+  }
+
+  private handlePaymentLookupError(
+    req: Request,
+    res: Response,
+    error: unknown,
+    logMessage: string,
+    clientMessage: string,
+  ) {
+    const message = this.getErrorMessage(error);
+
+    logger.error(logMessage, {
+      orderId: req.params.orderId,
+      error: message,
+    });
+
+    if (message.includes('not found')) {
+      return res.status(404).json({
+        success: false,
+        message: 'Payment not found for this order',
+      });
+    }
+
+    return res.status(500).json({
+      success: false,
+      message: clientMessage,
+    });
+  }
+
+  private isBakongError(message: string) {
+    return message.includes('BAKONG_') || message.includes('KHQR') || message.includes('Bakong');
+  }
+
+  private getErrorMessage(error: unknown) {
+    return error instanceof Error ? error.message : String(error);
+  }
 }

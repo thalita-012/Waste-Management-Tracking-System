@@ -6,6 +6,7 @@ const app = express();
 app.use(express.json());
 app.use(express.static('public'));
 app.use('/api/payments', paymentRoutes);
+app.use('/api', paymentRoutes);
 app.get('/health', (_req, res) => {
     res.json({
         success: true,
