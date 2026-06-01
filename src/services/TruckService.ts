@@ -6,11 +6,11 @@ export class TrackingService {
 
     // Create/register truck (HTTP-friendly wrapper)
     createTruck(data: { id: number | string; truckNumber: string; driverId: number | string }): Truck {
-        const id = Number(data.id);
-        const driverId = Number(data.driverId);
+        const id = this.normalizeId(data.id);
+        const driverId = this.normalizeId(data.driverId);
 
-        if (!Number.isFinite(id) || !Number.isFinite(driverId)) {
-            throw new Error("Invalid id or driverId (must be numeric)");
+        if (!id || !driverId) {
+            throw new Error("Invalid id or driverId");
         }
 
         const truck = new Truck(id, data.truckNumber, driverId);
@@ -25,9 +25,9 @@ export class TrackingService {
 
     // Get truck by id
     getTruckById(id: number | string): Truck | undefined {
-        const numericId = Number(id);
-        if (!Number.isFinite(numericId)) return undefined;
-        return this.trucks.find(t => t.id === numericId);
+        const truckId = this.normalizeId(id);
+        if (!truckId) return undefined;
+        return this.trucks.find(t => t.id === truckId);
     }
 
     // Update truck location
@@ -36,10 +36,10 @@ export class TrackingService {
         location: unknown
     ): Truck | undefined {
 
-        const numericId = Number(id);
-        if (!Number.isFinite(numericId)) return undefined;
+        const truckId = this.normalizeId(id);
+        if (!truckId) return undefined;
 
-        const truck = this.trucks.find(t => t.id === numericId);
+        const truck = this.trucks.find(t => t.id === truckId);
 
         if (truck) {
             const locationStr = typeof location === "string" ? location : JSON.stringify(location);
@@ -55,10 +55,10 @@ export class TrackingService {
         status: string
     ): Truck | undefined {
 
-        const numericId = Number(id);
-        if (!Number.isFinite(numericId)) return undefined;
+        const truckId = this.normalizeId(id);
+        if (!truckId) return undefined;
 
-        const truck = this.trucks.find(t => t.id === numericId);
+        const truck = this.trucks.find(t => t.id === truckId);
 
         if (truck) {
             truck.updateStatus(status);
@@ -70,6 +70,10 @@ export class TrackingService {
     // Get all trucks
     getAllTrucks(): Truck[] {
         return this.trucks;
+    }
+
+    private normalizeId(id: number | string): string {
+        return String(id).trim();
     }
 }
 

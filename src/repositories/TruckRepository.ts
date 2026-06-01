@@ -18,16 +18,17 @@ export class TruckRepository {
     }
 
     // Find Truck By ID
-    findById(id: number): Truck | undefined {
+    findById(id: number | string): Truck | undefined {
+        const truckId = String(id).trim();
 
         return this.trucks.find(
-            truck => truck.id === id
+            truck => truck.id === truckId
         );
     }
 
     // Update Location
     updateLocation(
-        id: number,
+        id: number | string,
         location: string
     ): Truck | undefined {
 
@@ -42,7 +43,7 @@ export class TruckRepository {
 
     // Update Status
     updateStatus(
-        id: number,
+        id: number | string,
         status: string
     ): Truck | undefined {
 
@@ -56,10 +57,11 @@ export class TruckRepository {
     }
 
     // Delete Truck
-    delete(id: number): boolean {
+    delete(id: number | string): boolean {
+        const truckId = String(id).trim();
 
         const index = this.trucks.findIndex(
-            truck => truck.id === id
+            truck => truck.id === truckId
         );
 
         if (index !== -1) {

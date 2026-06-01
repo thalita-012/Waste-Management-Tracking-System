@@ -5,10 +5,10 @@ export class TrackingService {
     }
     // Create/register truck (HTTP-friendly wrapper)
     createTruck(data) {
-        const id = Number(data.id);
-        const driverId = Number(data.driverId);
-        if (!Number.isFinite(id) || !Number.isFinite(driverId)) {
-            throw new Error("Invalid id or driverId (must be numeric)");
+        const id = this.normalizeId(data.id);
+        const driverId = this.normalizeId(data.driverId);
+        if (!id || !driverId) {
+            throw new Error("Invalid id or driverId");
         }
         const truck = new Truck(id, data.truckNumber, driverId);
         return this.addTruck(truck);
@@ -20,17 +20,17 @@ export class TrackingService {
     }
     // Get truck by id
     getTruckById(id) {
-        const numericId = Number(id);
-        if (!Number.isFinite(numericId))
+        const truckId = this.normalizeId(id);
+        if (!truckId)
             return undefined;
-        return this.trucks.find(t => t.id === numericId);
+        return this.trucks.find(t => t.id === truckId);
     }
     // Update truck location
     updateTruckLocation(id, location) {
-        const numericId = Number(id);
-        if (!Number.isFinite(numericId))
+        const truckId = this.normalizeId(id);
+        if (!truckId)
             return undefined;
-        const truck = this.trucks.find(t => t.id === numericId);
+        const truck = this.trucks.find(t => t.id === truckId);
         if (truck) {
             const locationStr = typeof location === "string" ? location : JSON.stringify(location);
             truck.updateLocation(locationStr);
@@ -39,10 +39,10 @@ export class TrackingService {
     }
     // Change status
     updateTruckStatus(id, status) {
-        const numericId = Number(id);
-        if (!Number.isFinite(numericId))
+        const truckId = this.normalizeId(id);
+        if (!truckId)
             return undefined;
-        const truck = this.trucks.find(t => t.id === numericId);
+        const truck = this.trucks.find(t => t.id === truckId);
         if (truck) {
             truck.updateStatus(status);
         }
@@ -51,6 +51,9 @@ export class TrackingService {
     // Get all trucks
     getAllTrucks() {
         return this.trucks;
+    }
+    normalizeId(id) {
+        return String(id).trim();
     }
 }
 // Backwards-compatible name for newer code

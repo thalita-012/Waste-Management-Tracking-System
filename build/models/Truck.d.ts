@@ -1,18 +1,18 @@
 export declare class Truck {
-    id: number;
+    id: string;
     truckNumber: string;
     liveLocation: string;
     status: string;
-    driveId: number;
-    constructor(id: number, truckNumber: string, driveId: number);
+    driverId: string;
+    constructor(id: string, truckNumber: string, driverId: string);
     updateLocation(location: string): void;
     updateStatus(status: string): void;
     getTruckInfo(): {
-        id: number;
+        id: string;
         truckNumber: string;
         liveLocation: string;
         status: string;
-        driveId: number;
+        driverId: string;
     };
 }
 //# sourceMappingURL=Truck.d.ts.map

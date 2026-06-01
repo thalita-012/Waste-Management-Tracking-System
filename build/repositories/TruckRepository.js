@@ -14,7 +14,8 @@ export class TruckRepository {
     }
     // Find Truck By ID
     findById(id) {
-        return this.trucks.find(truck => truck.id === id);
+        const truckId = String(id).trim();
+        return this.trucks.find(truck => truck.id === truckId);
     }
     // Update Location
     updateLocation(id, location) {
@@ -34,7 +35,8 @@ export class TruckRepository {
     }
     // Delete Truck
     delete(id) {
-        const index = this.trucks.findIndex(truck => truck.id === id);
+        const truckId = String(id).trim();
+        const index = this.trucks.findIndex(truck => truck.id === truckId);
         if (index !== -1) {
             this.trucks.splice(index, 1);
             return true;

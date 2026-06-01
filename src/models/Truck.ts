@@ -1,19 +1,19 @@
 export class Truck {
-    public id: number;
+    public id: string;
     public truckNumber: string;
     public liveLocation: string;
     public status: string;
-    public driveId: number;
+    public driverId: string;
 
     constructor(
-        id: number,
+        id: string,
         truckNumber: string,
-        driveId: number
+        driverId: string
 
     ) {
         this.id = id;
         this.truckNumber = truckNumber;
-        this.driveId = driveId;
+        this.driverId = driverId;
 
         this.liveLocation = "";
         this.status = "offline";
@@ -37,7 +37,7 @@ export class Truck {
             truckNumber: this.truckNumber,
             liveLocation: this.liveLocation,
             status: this.status, 
-            driveId: this.driveId
+            driverId: this.driverId
         };
     }
 }

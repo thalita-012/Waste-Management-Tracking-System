@@ -6,7 +6,7 @@ export class TruckController {
             try {
                 // Add validation
                 const { id, truckNumber, driverId } = req.body;
-                if (!id || !truckNumber || !driverId) {
+                if (id === undefined || !truckNumber || driverId === undefined) {
                     res.status(400).json({
                         success: false,
                         message: "Missing required fields: id, truckNumber, or driverId"

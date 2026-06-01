@@ -11,6 +11,7 @@ export declare class TrackingService {
     updateTruckLocation(id: number | string, location: unknown): Truck | undefined;
     updateTruckStatus(id: number | string, status: string): Truck | undefined;
     getAllTrucks(): Truck[];
+    private normalizeId;
 }
 export { TrackingService as TruckService };
 //# sourceMappingURL=TruckService.d.ts.map
