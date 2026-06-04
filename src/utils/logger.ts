@@ -1,4 +1,5 @@
 // Simple structured logger for production use
+import { env } from '../config/env.js';
 
 type LogLevel = 'info' | 'warn' | 'error' | 'debug';
 
@@ -33,7 +34,7 @@ class Logger {
   }
 
   debug(message: string, data?: LogData) {
-    if (process.env.NODE_ENV !== 'production') {
+    if (env.nodeEnv !== 'production') {
       const log = this.formatLog('debug', message, data);
       console.debug(JSON.stringify(log));
     }

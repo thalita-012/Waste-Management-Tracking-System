@@ -1,4 +1,5 @@
 import { createRequire } from 'node:module';
+import { env, getRequiredConfig } from '../config/env.js';
 import { PaymentRepository } from '../repositories/PaymentRepository.js';
 import { logger } from '../utils/logger.js';
 
@@ -56,18 +57,36 @@ type BakongCheckResponse = {
   };
 };
 
+type PaymentCurrency = 'KHR' | 'USD';
+
+type PaymentRecord = {
+  orderId: string;
+  amount: number;
+  currency: string;
+  status: string;
+};
+
 export class PaymentService {
   private paymentRepo = new PaymentRepository();
 
-  async createBakongPayment(orderId: string, amount: number, currency: 'KHR' | 'USD' = 'KHR') {
+  async createBakongPayment(orderId: string, amount: number, currency: PaymentCurrency = 'KHR') {
     if (!orderId || !amount) {
       throw new Error('orderId and amount are required');
     }
 
-    // Check if payment already exists (idempotency)
     const existingPayment = await this.paymentRepo.findByOrderId(orderId);
     if (existingPayment) {
-      logger.info('Payment already exists for orderId, returning existing', { orderId });
+      if (existingPayment.status === 'PENDING') {
+        logger.info('Payment already exists for orderId, refreshing pending QR', { orderId });
+        return await this.refreshPendingPaymentQr({
+          orderId,
+          amount,
+          currency,
+          status: existingPayment.status,
+        });
+      }
+
+      logger.info('Payment already exists for orderId, returning existing non-pending payment', { orderId });
       return existingPayment;
     }
 
@@ -142,12 +161,17 @@ export class PaymentService {
       throw new Error('Payment not found');
     }
 
+    if (payment.status === 'PENDING') {
+      logger.info('Refreshing pending QR before returning payment QR', { orderId });
+      return await this.refreshPendingPaymentQr(payment);
+    }
+
     return payment;
   }
 
   async checkConfiguredBakongAccount() {
-    const baseUrl = this.getRequiredEnv('BAKONG_API_BASE_URL').replace(/\/$/, '');
-    const accountId = this.getRequiredEnv('BAKONG_ACCOUNT_ID');
+    const baseUrl = getRequiredConfig('BAKONG_API_BASE_URL', env.bakong.apiBaseUrl).replace(/\/$/, '');
+    const accountId = getRequiredConfig('BAKONG_ACCOUNT_ID', env.bakong.accountId);
     const checkUrl = `${baseUrl}/v1/check_account_exist`;
 
     const result = await BakongKHQR.checkBakongAccount(checkUrl, accountId);
@@ -169,14 +193,14 @@ export class PaymentService {
     };
   }
 
-  private generateKhqr(orderId: string, amount: number, currency: 'KHR' | 'USD') {
-    const bakongAccountId = this.getRequiredEnv('BAKONG_ACCOUNT_ID');
-    const merchantName = this.limitKhqrText(this.getRequiredEnv('BAKONG_MERCHANT_NAME'), 25);
-    const merchantCity = this.limitKhqrText(process.env.BAKONG_MERCHANT_CITY || 'Phnom Penh', 15);
+  private generateKhqr(orderId: string, amount: number, currency: PaymentCurrency) {
+    const bakongAccountId = getRequiredConfig('BAKONG_ACCOUNT_ID', env.bakong.accountId);
+    const merchantName = this.limitKhqrText(getRequiredConfig('BAKONG_MERCHANT_NAME', env.bakong.merchantName), 25);
+    const merchantCity = this.limitKhqrText(env.bakong.merchantCity, 15);
     const currencyValue = currency === 'USD' ? khqrData.currency.usd : khqrData.currency.khr;
-    const accountInformation = this.getOptionalEnv('BAKONG_ACCOUNT_INFORMATION');
-    const merchantId = this.getOptionalEnv('BAKONG_MERCHANT_ID');
-    const acquiringBank = this.getOptionalEnv('BAKONG_ACQUIRING_BANK');
+    const accountInformation = env.bakong.accountInformation;
+    const merchantId = env.bakong.merchantId;
+    const acquiringBank = env.bakong.acquiringBank;
     this.validateKhqrMerchantConfig(merchantId, acquiringBank);
     const isMerchantQr = Boolean(merchantId && acquiringBank);
 
@@ -213,8 +237,8 @@ export class PaymentService {
   }
 
   private async checkBakongTransaction(md5: string) {
-    const baseUrl = this.getRequiredEnv('BAKONG_API_BASE_URL').replace(/\/$/, '');
-    const token = this.getRequiredEnv('BAKONG_API_TOKEN');
+    const baseUrl = getRequiredConfig('BAKONG_API_BASE_URL', env.bakong.apiBaseUrl).replace(/\/$/, '');
+    const token = getRequiredConfig('BAKONG_API_TOKEN', env.bakong.apiToken);
 
     logger.debug('Checking Bakong transaction', { md5 });
 
@@ -255,19 +279,20 @@ export class PaymentService {
     return response.data?.hash || response.data?.transactionHash || response.data?.bakongTxId || response.data?.md5;
   }
 
-  private getRequiredEnv(name: string) {
-    const value = this.getOptionalEnv(name);
+  private async refreshPendingPaymentQr(payment: PaymentRecord) {
+    const currency = this.normalizePaymentCurrency(payment.currency);
+    const khqrData = this.generateKhqr(payment.orderId, payment.amount, currency);
 
-    if (!value) {
-      logger.error('Missing required environment variable', { variable: name });
-      throw new Error(`${name} is required`);
-    }
-
-    return value;
+    return await this.paymentRepo.refreshQr(payment.orderId, {
+      amount: payment.amount,
+      currency,
+      qrString: khqrData.qr,
+      khqrMd5: khqrData.md5,
+    });
   }
 
-  private getOptionalEnv(name: string) {
-    return process.env[name]?.trim() || undefined;
+  private normalizePaymentCurrency(currency: string): PaymentCurrency {
+    return currency.toUpperCase() === 'USD' ? 'USD' : 'KHR';
   }
 
   private validateKhqrMerchantConfig(merchantId?: string, acquiringBank?: string) {
@@ -283,11 +308,9 @@ export class PaymentService {
   }
 
   private getDynamicPaymentFields(amount: number) {
-    const expirationMinutes = Number(process.env.BAKONG_QR_EXPIRATION_MINUTES || 5);
-
     return {
       amount,
-      expirationTimestamp: Date.now() + expirationMinutes * 60 * 1000,
+      expirationTimestamp: Date.now() + env.bakong.qrExpirationMinutes * 60 * 1000,
     };
   }
 }

@@ -1,6 +1,7 @@
 import jwt, { type SignOptions } from 'jsonwebtoken';
+import { env } from '../config/env.js';
 
-const JWT_SECRET = process.env.JWT_SECRET || 'your_fallback_secret';
+const JWT_SECRET = env.jwtSecret;
 
 export const generateToken = (payload: object, expiresIn: SignOptions['expiresIn'] = '1d') => {
   return jwt.sign(payload, JWT_SECRET, { expiresIn });

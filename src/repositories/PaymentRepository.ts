@@ -33,6 +33,23 @@ export class PaymentRepository {
     });
   }
 
+  async refreshQr(
+    orderId: string,
+    data: {
+      amount: number;
+      currency: string;
+      qrString: string;
+      khqrMd5: string;
+    },
+  ) {
+    return await prisma.payment.update({
+      where: {
+        orderId,
+      },
+      data,
+    });
+  }
+
   async markPaid(orderId: string, bakongTxId?: string) {
     return await prisma.payment.update({
       where: {
