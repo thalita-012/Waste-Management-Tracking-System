@@ -1,5 +1,6 @@
 import express from 'express';
 import paymentRoutes from './routes/paymentRoute.js';
+import truckRoutes from './routes/TruckRouter.js';
 import { testConnection } from './config/db.js';
 import { errorMiddleware } from './middlewares/ErrorMiddleware.js';
 
@@ -9,6 +10,7 @@ app.use(express.json());
 app.use(express.static('public'));
 app.use('/api/payments', paymentRoutes);
 app.use('/api', paymentRoutes);
+app.use('/api', truckRoutes);
 
 app.get('/health', (_req, res) => {
   res.json({

@@ -1,4 +1,4 @@
-import { prisma } from '../utils/prisma.js';
+import { prisma } from "../utils/prisma.js";
 
 export class PaymentRepository {
   async create(data: {
@@ -100,4 +100,3 @@ export class PaymentRepository {
     });
   }
 }
-
