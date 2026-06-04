@@ -1,68 +1,66 @@
-import axios from 'axios';
-export class PaymentService {
-  private paymentRepo = new PaymentRepository();
+// import axios from 'axios';
+// import { PaymentRepository } from '../repositories/PaymentRepository.js';
 
-  async createBakongPayment(orderId: string, amount: number) {
-    // Example payload
-    const payload = {
-      merchantId: process.env.BAKONG_MERCHANT_ID,
-      amount,
-      currency: 'KHR',
-      reference: orderId,
-    };
+// export class PaymentService {
+//   private paymentRepo = new PaymentRepository();
 
-    // Call Bakong API
-    const response = await axios.post(
-      process.env.BAKONG_API_URL as string,
-      payload,
-      {
-        headers: {
-          'Content-Type': 'application/json',
-          Authorization: `Bearer ${process.env.BAKONG_API_KEY}`,
-        },
-      }
-    );
+//   async createBakongPayment(orderId: string, amount: number) {
+//     const payload = {
+//       merchantId: process.env.BAKONG_MERCHANT_ID,
+//       amount,
+//       currency: 'KHR',
+//       reference: orderId,
+//     };
 
-    const qrString = response.data.qrString;
+//     const response = await axios.post(
+//       process.env.BAKONG_API_URL as string,
+//       payload,
+//       {
+//         headers: {
+//           'Content-Type': 'application/json',
+//           Authorization: `Bearer ${process.env.BAKONG_API_KEY}`,
+//         },
+//       }
+//     );
 
-    // Save payment record
-    const payment = await this.paymentRepo.create({
-      orderId,
-      amount,
-      currency: 'KHR',
-      qrString,
-      status: 'PENDING',
-    });
+//     const qrString = response.data.qrString;
 
-    return payment;
-  }
+//     const payment = await this.paymentRepo.create({
+//       orderId,
+//       amount,
+//       currency: 'KHR',
+//       qrString,
+//       status: 'PENDING',
+//     });
 
-  async verifyPayment(orderId: string) {
-    const payment = await this.paymentRepo.findByOrderId(orderId);
+//     return payment;
+//   }
 
-    if (!payment) {
-      throw new Error('Payment not found');
-    }
+//   async verifyPayment(orderId: string) {
+//     const payment = await this.paymentRepo.findByOrderId(orderId);
 
-    // Example verification request
-    const response = await axios.get(
-      `${process.env.BAKONG_API_URL}/check/${orderId}`,
-      {
-        headers: {
-          Authorization: `Bearer ${process.env.BAKONG_API_KEY}`,
-        },
-      }
-    );
+//     if (!payment) {
+//       throw new Error('Payment not found');
+//     }
 
-    const isPaid = response.data.status === 'PAID';
+//     const response = await axios.get(
+//       `${process.env.BAKONG_API_URL}/check/${orderId}`,
+//       {
+//         headers: {
+//           Authorization: `Bearer ${process.env.BAKONG_API_KEY}`,
+//         },
+//       }
+//     );
 
-    if (isPaid) {
-      await this.paymentRepo.updateStatus(orderId, 'PAID');
-    }
+//     const isPaid = response.data.status === 'PAID';
 
-    return {
-      orderId,
-      paid: isPaid,
-    };
-  }
-}
+//     if (isPaid) {
+//       await this.paymentRepo.updateStatus(orderId, 'PAID');
+//     }
+
+//     return {
+//       orderId,
+//       paid: isPaid,
+//     };
+//   }
+// }

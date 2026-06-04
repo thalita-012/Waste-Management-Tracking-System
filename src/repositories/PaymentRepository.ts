@@ -1,39 +1,27 @@
-import { prisma } from '../utils/prisma';
+// import PaymentModel from '../models/Payment.js';
 
-export class PaymentRepository {
-  async create(data: any) {
-    return await prisma.payment.create({
-      data,
-    });
-  }
+// export class PaymentRepository {
+//   async create(data: any) {
+//     return await PaymentModel.create(data);
+//   }
 
-  async findByOrderId(orderId: string) {
-    return await prisma.payment.findUnique({
-      where: {
-        orderId,
-      },
-    });
-  }
+//   async findByOrderId(orderId: string) {
+//     return await PaymentModel.findOne({ orderId });
+//   }
 
-  async updateStatus(orderId: string, status: string) {
-    return await prisma.payment.update({
-      where: {
-        orderId,
-      },
-      data: {
-        status,
-      },
-    });
-  }
+//   async updateStatus(orderId: string, status: string) {
+//     return await PaymentModel.findOneAndUpdate(
+//       { orderId },
+//       { status },
+//       { new: true }
+//     );
+//   }
 
-  async saveBakongTx(orderId: string, bakongTxId: string) {
-    return await prisma.payment.update({
-      where: {
-        orderId,
-      },
-      data: {
-        bakongTxId,
-      },
-    });
-  }
-}
+//   async saveBakongTx(orderId: string, bakongTxId: string) {
+//     return await PaymentModel.findOneAndUpdate(
+//       { orderId },
+//       { bakongTxId },
+//       { new: true }
+//     );
+//   }
+// }

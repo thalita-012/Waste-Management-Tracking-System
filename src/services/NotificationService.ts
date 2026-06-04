@@ -1,57 +1,56 @@
-import { NotificationModel } from "../models/notification";
-import { NotificationRepository } from "../repositories/NotificationRepository";
-import { DistanceUtil } from "../utils/distance.util";
+import { NotificationModel } from '../models/notification.js';
+import { NotificationRepository } from '../repositories/NotificationRepository.js';
+import { DistanceUtil } from '../utils/distance.util.js';
 
 export class NotificationService {
-  private notificationRepository: NotificationRepository;
+    private notificationRepository = new NotificationRepository();
 
-  constructor() {
-    this.notificationRepository = new NotificationRepository();
-  }
+      // Send notification when truck is nearby
+    sendTruckNearbyNotification(
+        userId: number,
+        truckLat: number,
+        truckLng: number,
+        userLat: number,
+        userLng: number
+    ): NotificationModel | null {
 
-  sendTruckNearbyNotification(
-    userId: number,
-    truckLat: number,
-    truckLng: number,
-    userLat: number,
-    userLng: number
-  ): NotificationModel | null {
-    const distance = DistanceUtil.calculateDistance(
-      truckLat,
-      truckLng,
-      userLat,
-      userLng
-    );
+        const distance = DistanceUtil.calculateDistance(
+            truckLat,
+            truckLng,
+            userLat,
+            userLng
+        );
 
-    // Example: notify if truck is close
-    if (distance < 0.05) {
-      const notification = new NotificationModel({
-        id: Date.now(),
-        userId,
-        message: "The garbage truck will arrive in 10 minutes.",
-        status: "UNREAD",
-        createdAt: new Date(),
-      });
+        if (distance >= 0.05) {
+            return null;
+        }
 
-      return this.notificationRepository.create(notification);
+        const notification = new NotificationModel({
+            id: Date.now(),
+            userId: userId,
+            message: 'The garbage truck will arrive in 10 minutes.',
+            status: 'UNREAD',
+            createAt: new Date()
+        });
+
+        return this.notificationRepository.create(notification);
+    }
+  // Send weekly garbage collection reminder
+    sendWeeklyReminder(userId: number): NotificationModel {
+
+        const notification = new NotificationModel({
+            id: Date.now(),
+            userId: userId,
+            message: 'Reminder: Garbage collection is every Monday and Thursday.',
+            status: 'UNREAD',
+            createAt: new Date()
+        });
+
+        return this.notificationRepository.create(notification);
     }
 
-    return null;
-  }
-
-  sendWeeklyReminder(userId: number): NotificationModel {
-    const notification = new NotificationModel({
-      id: Date.now(),
-      userId,
-      message: "Reminder: Garbage collection is every Monday and Thursday.",
-      status: "UNREAD",
-      createdAt: new Date(),
-    });
-
-    return this.notificationRepository.create(notification);
-  }
-
-  getUserNotifications(userId: number) {
-    return this.notificationRepository.findByUser(userId);
-  }
+  // Get all notifications for one user
+    getUserNotifications(userId: number): NotificationModel[] {
+        return this.notificationRepository.findByUser(userId);
+    }
 }

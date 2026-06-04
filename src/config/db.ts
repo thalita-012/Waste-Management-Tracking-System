@@ -3,7 +3,10 @@ import { Pool } from 'pg';
 
 dotenv.config();
 
-const pool = new Pool({
+/**
+ * PostgreSQL connection pool
+ */
+export const pool = new Pool({
   host: process.env.DB_HOST || 'localhost',
   port: Number(process.env.DB_PORT) || 5432,
   user: process.env.DB_USER || 'postgres',
@@ -11,15 +14,19 @@ const pool = new Pool({
   database: process.env.DB_NAME || 'postgres',
 });
 
-export async function testConnection() {
+/**
+ * Test database connection
+ */
+export const testConnection = async (): Promise<boolean> => {
   try {
-    const result = await pool.query<{ current_time: Date }>('SELECT NOW() as current_time');
-    console.log('Connected to PostgreSQL');
+    await pool.query('SELECT NOW()');
+
+    console.log('✅ PostgreSQL connected successfully');
+
     return true;
   } catch (error) {
-    console.error('Connection failed:', error);
+    console.error('❌ Database connection failed:', error);
+
     return false;
   }
-}
-
-export { pool };
+};

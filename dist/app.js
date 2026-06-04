@@ -1,16 +1,41 @@
-// import express from "express";
-// const app = express();
-// app.use(express.json());
-// const PORT = 3000;
-// app.listen(PORT, () => {
-//   console.log(`Server is running on port ${PORT}`);
-// });
 import express from 'express';
-import paymentRoutes from './routes/paymentRoute.ts';
+import { registerRoutes } from './routes/index.js';
+import { errorMiddleware } from './middlewares/ErrorMiddleware.js';
+import { loggerMiddleware } from './middlewares/LoggerMiddleware.js';
+import { uptime } from 'process';
+import { time, timeStamp } from 'console';
 const app = express();
+// Built-in Middleware
 app.use(express.json());
-app.use('/api/payments', paymentRoutes);
-app.listen(3000, () => {
-    console.log('Server running on port 3000');
+// Custom Middleware
+app.use(loggerMiddleware);
+app.get('/', (_req, res) => {
+    res.json({
+        success: true,
+        message: 'Waste Management Tracking API Running',
+    });
 });
+// Health Check
+app.get('/api/health', (_req, res) => {
+    res.status(200).json({
+        success: true,
+        message: 'Server is running',
+        uptime: process.uptime(),
+        timeStamp: new Date(),
+    });
+});
+// test api
+app.get('/api/test', (_req, res) => {
+    res.status(200).json({
+        success: true,
+        message: "Testing it working",
+        uptime: process.uptime(),
+        timeStamp: new Date(),
+    });
+});
+// Register Routes
+registerRoutes(app);
+// Error Middleware
+app.use(errorMiddleware);
+export default app;
 //# sourceMappingURL=app.js.map
