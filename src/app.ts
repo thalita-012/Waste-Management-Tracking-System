@@ -4,12 +4,20 @@ import truckRoutes from './routes/TruckRouter.js';
 import notificationRoutes from './routes/NotificationRoutes.js';
 import { testConnection } from './config/db.js';
 import { errorMiddleware } from './middlewares/ErrorMiddleware.js';
+import { authController } from './controllers/AuthController.js';
+import { authMiddleware } from './middlewares/AuthMiddleware.js';
 
 const app = express();
 
-// Built-in Middleware
 app.use(express.json());
-app.use(express.static('public'));
+
+app.post('/api/auth/register', (req, res) => authController.register(req, res));
+app.post('/api/auth/login', (req, res) => authController.login(req, res));
+app.post('/api/auth/forgot-password', (req, res) => authController.forgotPassword(req, res));
+app.post('/api/auth/reset-password', (req, res) => authController.resetPassword(req, res));
+app.get('/api/auth/profile', authMiddleware, (req, res) => authController.getProfile(req, res));
+app.put('/api/auth/profile', authMiddleware, (req, res) => authController.updateProfile(req, res));
+
 app.use('/api/payments', paymentRoutes);
 app.use('/api', paymentRoutes);
 app.use('/api', truckRoutes);
