@@ -375,3 +375,151 @@ Checks whether the backend can connect to the database.
 - The backend source is in `src`.
 - Payment, notification, and truck routes are mounted in `src/app.ts`.
 - You can expand this document later with request/response examples taken from the real service output after testing the API.
+
+## Examples (curl)
+
+Replace `localhost:3000` with your base URL and `<TOKEN>` with a valid JWT where required.
+
+- Register user
+
+```bash
+curl -X POST http://localhost:3000/api/auth/register \
+  -H "Content-Type: application/json" \
+  -d '{"full_name":"John Doe","email":"john@example.com","password":"P@ssw0rd"}'
+```
+
+- Login
+
+```bash
+curl -X POST http://localhost:3000/api/auth/login \
+  -H "Content-Type: application/json" \
+  -d '{"email":"john@example.com","password":"P@ssw0rd"}'
+```
+
+- Forgot password
+
+```bash
+curl -X POST http://localhost:3000/api/auth/forgot-password \
+  -H "Content-Type: application/json" \
+  -d '{"email":"john@example.com"}'
+```
+
+- Reset password
+
+```bash
+curl -X POST http://localhost:3000/api/auth/reset-password \
+  -H "Content-Type: application/json" \
+  -d '{"token":"<RESET_TOKEN>","password":"NewP@ssw0rd"}'
+```
+
+- Get profile (protected)
+
+```bash
+curl -X GET http://localhost:3000/api/auth/profile \
+  -H "Authorization: Bearer <TOKEN>" \
+  -H "Content-Type: application/json"
+```
+
+- Update profile (protected)
+
+```bash
+curl -X PUT http://localhost:3000/api/auth/profile \
+  -H "Authorization: Bearer <TOKEN>" \
+  -H "Content-Type: application/json" \
+  -d '{"full_name":"Jane Doe","phone_number":"0123456789"}'
+```
+
+- Health check
+
+```bash
+curl http://localhost:3000/health
+```
+
+- DB test
+
+```bash
+curl http://localhost:3000/db-test
+```
+
+- Create payment
+
+```bash
+curl -X POST http://localhost:3000/api/payments/create \
+  -H "Content-Type: application/json" \
+  -d '{"orderId":"order-123","amount":10.5,"currency":"KHR"}'
+```
+
+- Get payment QR
+
+```bash
+curl http://localhost:3000/api/payments/bakong/qr/order-123
+```
+
+- Decode Bakong QR (bakong/decode)
+
+```bash
+curl -X POST http://localhost:3000/api/payments/bakong/decode \
+  -H "Content-Type: application/json" \
+  -d '{"qrString":"<KHQR_STRING>"}'
+```
+
+- Bakong account check
+
+```bash
+curl http://localhost:3000/api/payments/bakong/account-check
+```
+
+- Verify payment
+
+```bash
+curl http://localhost:3000/api/payments/bakong/verify/order-123
+```
+
+- Truck endpoints
+
+Create truck:
+
+```bash
+curl -X POST http://localhost:3000/api/trucks \
+  -H "Content-Type: application/json" \
+  -d '{"id":"truck-1","truckNumber":"TN-001","driverId":1}'
+```
+
+Get all trucks:
+
+```bash
+curl http://localhost:3000/api/trucks
+```
+
+Update truck location:
+
+```bash
+curl -X PUT http://localhost:3000/api/trucks/truck-1/location \
+  -H "Content-Type: application/json" \
+  -d '{"liveLocation":"12.34,56.78"}'
+```
+
+Get truck by id:
+
+```bash
+curl http://localhost:3000/api/trucks/truck-1
+```
+
+- Notifications (protected)
+
+Nearby alert:
+
+```bash
+curl -X POST http://localhost:3000/api/notifications/nearby-alert \
+  -H "Authorization: Bearer <TOKEN>" \
+  -H "Content-Type: application/json" \
+  -d '{"latitude":13.7,"longitude":100.5,"radius":5}'
+```
+
+Get my notifications:
+
+```bash
+curl -X GET http://localhost:3000/api/notifications/me \
+  -H "Authorization: Bearer <TOKEN>"
+```
+

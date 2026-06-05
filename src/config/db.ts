@@ -6,11 +6,8 @@ if (!env.database.url) {
 }
 
 export const pool = new Pool({
-  host: env.database.host,
-  port: env.database.port,
-  user: env.database.user,
-  password: env.database.password,
-  database: env.database.name,
+  connectionString: env.database.url,
+  ssl: env.nodeEnv === 'production' ? { rejectUnauthorized: false } : false
 });
 
 export const testConnection = async (): Promise<boolean> => {

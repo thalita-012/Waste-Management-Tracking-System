@@ -1,0 +1,17 @@
+services:
+  - type: web
+    name: wmts-backend
+    runtime: node
+    buildCommand: npm install && npm run db:setup && npm run build
+    startCommand: npm start
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: DATABASE_URL
+        fromDatabase:
+          name: wmts
+          property: connectionString
+      - key: JWT_SECRET
+        generateValue: true
+      - key: PORT
+        value: 10000
