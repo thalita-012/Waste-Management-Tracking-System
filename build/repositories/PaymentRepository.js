@@ -39,8 +39,7 @@ export class PaymentRepository {
         });
     }
     async markPaidConditional(orderId, expectedStatus, bakongTxId) {
-        // Only update if status is still in the expected state (PENDING)
-        return await prisma.payment.updateMany({
+        const result = await prisma.payment.updateMany({
             where: {
                 orderId,
                 status: expectedStatus,
@@ -49,20 +48,14 @@ export class PaymentRepository {
                 status: 'PAID',
                 ...(bakongTxId ? { bakongTxId } : {}),
             },
-        }).then(async (result) => {
-            // If nothing was updated, it means another request already marked it as paid
-            // Return the current payment record
-            if (result.count === 0) {
-                const payment = await prisma.payment.findUnique({
-                    where: { orderId },
-                });
-                return payment;
-            }
-            // Return the updated payment
-            return await prisma.payment.findUnique({
-                where: { orderId },
-            }).then(p => p);
         });
+        const payment = await prisma.payment.findUnique({
+            where: { orderId },
+        });
+        if (!payment) {
+            throw new Error('Payment not found');
+        }
+        return payment;
     }
     async saveBakongTx(orderId, bakongTxId) {
         return await prisma.payment.update({
