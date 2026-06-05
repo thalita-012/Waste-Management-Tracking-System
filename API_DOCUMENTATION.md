@@ -2,14 +2,13 @@
 
 ## Overview
 
-This project exposes a small REST API for authentication and basic server checks.
+This project exposes a REST API for authentication, truck tracking, notifications, payments, and basic server checks.
 
-The backend runs on port `3000` by default, and the frontend uses `/api` as the API base path in development.
+The backend runs on port `3000` by default.
 
 ## Base URLs
 
 - Local backend: `http://localhost:3000`
-- Frontend dev proxy: `/api` -> `http://localhost:3000`
 
 ## Authentication
 
@@ -360,19 +359,6 @@ Checks whether the backend can connect to the database.
 }
 ```
 
-## Frontend API Usage
-
-The frontend API wrapper uses these same auth endpoints:
-
-- `/api/auth/register`
-- `/api/auth/login`
-- `/api/auth/forgot-password`
-- `/api/auth/reset-password`
-- `/api/auth/profile` `GET`
-- `/api/auth/profile` `PUT`
-
-See `frontend/src/utils/api.ts` for the exact request code.
-
 ## Testing Order
 
 1. `GET /health`
@@ -386,6 +372,6 @@ See `frontend/src/utils/api.ts` for the exact request code.
 
 ## Notes
 
-- The backend currently defines only auth-related REST routes in `backend/src/app.ts`.
-- The `PaymentController`, `NotificationController`, and `TruckController` files are currently empty, so there are no active REST endpoints for those features yet.
-- If you want, you can expand this document later with request/response examples taken from the real service output after testing the API.
+- The backend source is in `src`.
+- Payment, notification, and truck routes are mounted in `src/app.ts`.
+- You can expand this document later with request/response examples taken from the real service output after testing the API.
