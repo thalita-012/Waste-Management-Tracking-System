@@ -38,6 +38,20 @@ app.get('/db-test', async (_req, res) => {
   });
 });
 
+app.use((_req, res) => {
+  res.status(404).json({
+    success: false,
+    message: 'Route not found',
+    routes: {
+      health: 'GET /health',
+      createPayment: ['POST /api/payments/bakong/create', 'POST /api/payments/create'],
+      verifyPayment: 'GET /api/payments/bakong/verify/:orderId',
+      paymentQr: 'GET /api/payments/bakong/qr/:orderId',
+      bakongAccountCheck: 'GET /api/payments/bakong/account-check',
+    },
+  });
+});
+
 app.use(errorMiddleware);
 
 export default app;

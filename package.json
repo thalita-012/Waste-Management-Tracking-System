@@ -5,9 +5,11 @@
   "main": "build/server.js",
   "type": "module",
   "scripts": {
-    "build": "tsc",
+    "prisma:generate": "prisma generate",
+    "build": "npm run prisma:generate && tsc",
+    "db:setup": "node scripts/setup-database.mjs",
     "start": "node build/server.js",
-    "dev": "nodemon --watch src --ext ts --exec \"npm run build && node build/server.js\"",
+    "dev": "nodemon --watch src --ignore src/generated/prisma --ext ts --exec \"npm run build && node build/server.js\"",
     "watch": "tsc --watch"
   },
   "repository": {

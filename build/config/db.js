@@ -1,5 +1,4 @@
 import { Pool } from 'pg';
-import { env } from './env.js';
 /**
  * PostgreSQL connection pool
  */
@@ -16,11 +15,11 @@ export const pool = new Pool({
 export const testConnection = async () => {
     try {
         await pool.query('SELECT NOW()');
-        console.log('✅ PostgreSQL connected successfully');
+        console.log('PostgreSQL connected successfully');
         return true;
     }
     catch (error) {
-        console.error('❌ Database connection failed:', error);
+        console.error('Database connection failed:', error);
         return false;
     }
 };
