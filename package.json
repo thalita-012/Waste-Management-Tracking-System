@@ -6,6 +6,7 @@
   "type": "module",
   "scripts": {
     "build": "npx prisma generate && npx prisma db push && tsc",
+    "db:setup": "node scripts/setup-database.mjs",
     "start": "node dist/server.js",
     "postinstall": "npx prisma generate",
     "dev": "npx nodemon --watch src --ext ts --exec \"npm run build && node dist/server.js\"",
