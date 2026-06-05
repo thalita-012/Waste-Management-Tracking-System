@@ -4,26 +4,23 @@ generator client {
 
 datasource db {
   provider = "postgresql"
-  url      = env("DATABASE_URL")
 }
-
 model User {
-  id                      Int            @id @default(autoincrement())
-  fullName                String?        @map("full_name")
-  email                   String?        @unique
-  passwordHash            String?        @map("password_hash")
-  role                    String         @default("USER")
-  phoneNumber             String?        @map("phone_number")
-  address                 String?
-  profilePicture          String?        @map("profile_picture")
-  latitude                Float?
-  longitude               Float?
-  passwordResetToken      String?        @map("password_reset_token")
-  passwordResetExpiresAt  DateTime?      @map("password_reset_expires_at")
-  createdAt               DateTime       @default(now()) @map("created_at")
-  updatedAt               DateTime       @updatedAt     @map("updated_at")
-  trucks                  Truck[]        @relation("DriverTrucks")
-  notifications           Notification[]
+  id                       Int      @id @default(autoincrement())
+  fullName                 String?  @map("full_name")
+  email                    String?  @unique
+  passwordHash             String?  @map("password_hash")
+  phoneNumber              String?  @map("phone_number")
+  address                  String?
+  profilePicture           String?  @map("profile_picture")
+  latitude                 Float?
+  longitude                Float?
+  passwordResetToken       String?  @map("password_reset_token")
+  passwordResetExpiresAt   DateTime?@map("password_reset_expires_at")
+  createdAt                DateTime @default(now()) @map("created_at")
+  updatedAt                DateTime @updatedAt     @map("updated_at")
+  trucks                   Truck[]  @relation("DriverTrucks")
+  notifications            Notification[]
 
   @@map("users")
 }
