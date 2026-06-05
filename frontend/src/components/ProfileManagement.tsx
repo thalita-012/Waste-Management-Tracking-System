@@ -1,4 +1,4 @@
-import { useState, useRef, MouseEvent, FormEvent, useEffect } from 'react';
+import { useState, useRef, MouseEvent, FormEvent, useEffect, type ChangeEvent } from 'react';
 import { Camera, LockKeyhole, MapPin, Compass, CheckCircle, RefreshCw, Undo, Save, Loader2 } from 'lucide-react';
 import { UserProfile } from '../types';
 import { AuthAPI } from '../utils/api';
@@ -12,6 +12,7 @@ const INITIAL_PROFILE: UserProfile = {
   email: 'm.chen@ecotrack.org',
   phoneNumber: '+1 (555) 012-3456',
   address: '452 Industrial Way, San Francisco, CA',
+  profilePicture: '',
   latitude: '37.774929',
   longitude: '-122.419416',
   memberSince: 'January 2024',
@@ -28,6 +29,7 @@ export default function ProfileManagement({ onToast }: ProfileManagementProps) {
   // Track visual marker position percent inside map container for custom map target
   const [markerPos, setMarkerPos] = useState({ x: 50, y: 50 });
   const mapRef = useRef<HTMLDivElement>(null);
+  const avatarInputRef = useRef<HTMLInputElement>(null);
   const [mapScale, setMapScale] = useState(1);
   const [mapTranslate, setMapTranslate] = useState({ x: 0, y: 0 });
 
@@ -49,6 +51,7 @@ export default function ProfileManagement({ onToast }: ProfileManagementProps) {
             email: userData.email,
             phoneNumber: userData.phone_number || '',
             address: userData.address || '',
+            profilePicture: userData.profile_picture || '',
             latitude: userData.latitude ? userData.latitude.toString() : '37.774929',
             longitude: userData.longitude ? userData.longitude.toString() : '-122.419416',
             memberSince: new Date(userData.created_at).toLocaleDateString('en-US', { year: 'numeric', month: 'long' }),
@@ -71,6 +74,49 @@ export default function ProfileManagement({ onToast }: ProfileManagementProps) {
       ...prev,
       [field]: val
     }));
+  };
+
+  const handleAvatarClick = () => {
+    avatarInputRef.current?.click();
+  };
+
+  const handleAvatarChange = (e: ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    if (!file.type.startsWith('image/')) {
+      onToast('Please choose an image file.', 'info');
+      return;
+    }
+
+    if (file.size > 2 * 1024 * 1024) {
+      onToast('Profile photo must be 2 MB or smaller.', 'info');
+      return;
+    }
+
+    const reader = new FileReader();
+    reader.onload = () => {
+      if (typeof reader.result === 'string') {
+        setProfile(prev => ({
+          ...prev,
+          profilePicture: reader.result
+        }));
+        onToast('Profile picture updated. Save changes to apply it.', 'success');
+      }
+    };
+    reader.readAsDataURL(file);
+    e.target.value = '';
+  };
+
+  const getAvatarInitials = () => {
+    const initials = profile.fullName
+      .split(' ')
+      .filter(Boolean)
+      .slice(0, 2)
+      .map(part => part[0]?.toUpperCase() || '')
+      .join('');
+
+    return initials || 'U';
   };
 
   const handleMapClick = (e: MouseEvent<HTMLDivElement>) => {
@@ -165,12 +211,16 @@ export default function ProfileManagement({ onToast }: ProfileManagementProps) {
         full_name: profile.fullName,
         phone_number: profile.phoneNumber,
         address: profile.address,
+        profile_picture: profile.profilePicture || undefined,
         latitude: parseFloat(profile.latitude),
         longitude: parseFloat(profile.longitude)
       });
 
       if (response.success) {
         onToast('Profile saved successfully.', 'success');
+        if (response.user) {
+          localStorage.setItem('user_data', JSON.stringify(response.user));
+        }
       } else {
         onToast(response.error || response.message, 'info');
       }
@@ -185,10 +235,6 @@ export default function ProfileManagement({ onToast }: ProfileManagementProps) {
     onToast('A secure password reset verification link was dispatched to your email address.', 'success');
   };
 
-  const updateAvatarClick = () => {
-    onToast('Upload feature is disabled in sandbox mode. Profile photo is verified.', 'info');
-  };
-
   return (
     <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start animate-fade-in select-none">
       
@@ -197,23 +243,42 @@ export default function ProfileManagement({ onToast }: ProfileManagementProps) {
         
         {/* Profile Details Container */}
         <div className="bg-surface-container-lowest border border-outline-variant rounded-xl p-6 flex flex-col items-center text-center">
-          <div 
-            onClick={updateAvatarClick}
+          <input
+            ref={avatarInputRef}
+            type="file"
+            accept="image/*"
+            className="hidden"
+            onChange={handleAvatarChange}
+          />
+
+          <button
+            type="button"
+            onClick={handleAvatarClick}
             className="relative group cursor-pointer mb-4 select-none"
+            aria-label="Upload profile picture"
           >
-            <div className="w-32 h-32 rounded-full overflow-hidden border-4 border-surface-container-high relative transition-all shadow-md group-hover:border-emerald-500">
-              <img 
-                alt="Profile Avatar of Marcus Chen" 
-                className="w-full h-full object-cover"
-                referrerPolicy="no-referrer"
-                src="https://lh3.googleusercontent.com/aida-public/AB6AXuCnk5iU0Lj2G5rPEFNWMmcTO1Z0y3LqOgDGm6G8orR91BtZxwqzqTMoU7EbZSzZ-9vu-lMFshpD2A9o7on6cCvEK8ixtdq7VfFgGcKz-gmFMtI8YRgiEuBh5YcKHAzV-XU0czB9xbJh80P2fX76991AfkKlemqb90n5tn9-JBQFLaH0JewjAJVCYkQ8JZ9qnc4UwPUPky_BpHkotLehGa-MrUGk_EeDAFv2VFNBrO7iwEw0EhBB1rO8w2KHIjH2d9MrrotJMGBRJi8W" 
-              />
+            <div className="w-32 h-32 rounded-full overflow-hidden border-4 border-surface-container-high relative transition-all shadow-md group-hover:border-emerald-500 bg-gradient-to-br from-primary-container to-secondary-container flex items-center justify-center">
+              {profile.profilePicture ? (
+                <img
+                  alt={`Profile avatar of ${profile.fullName}`}
+                  className="w-full h-full object-cover"
+                  referrerPolicy="no-referrer"
+                  src={profile.profilePicture}
+                />
+              ) : (
+                <span className="text-3xl font-bold text-on-primary-fixed">
+                  {getAvatarInitials()}
+                </span>
+              )}
             </div>
-            
-            <div className="absolute inset-0 flex items-center justify-center bg-primary/30 rounded-full opacity-0 group-hover:opacity-100 transition-opacity">
+
+            <div className="absolute inset-0 flex flex-col items-center justify-center gap-1 bg-primary/35 rounded-full opacity-0 group-hover:opacity-100 transition-opacity">
               <Camera className="text-on-primary w-6 h-6" />
+              <span className="text-[10px] font-bold uppercase tracking-widest text-on-primary">
+                Change Photo
+              </span>
             </div>
-          </div>
+          </button>
 
           <h2 className="text-xl font-bold text-on-surface">
             {profile.fullName}
@@ -334,7 +399,7 @@ export default function ProfileManagement({ onToast }: ProfileManagementProps) {
             <div className="space-y-3">
               <div className="flex justify-between items-center select-none">
                 <label className="text-xs font-bold text-on-surface-variant">
-                  Primary Collection Point (GPS) — <span className="text-emerald-700 italic">Click on map to choose new coordinate</span>
+                  Primary Collection Point (GPS) - <span className="text-emerald-700 italic">Click on map to choose new coordinate</span>
                 </label>
                 
                 <button 

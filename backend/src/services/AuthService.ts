@@ -3,6 +3,7 @@ import crypto from 'node:crypto';
 import jwt from 'jsonwebtoken';
 import { userRepository } from '../repositories/UserRepository.js';
 import type { CreateUserInput, UpdateUserInput, User, AuthResponse } from '../models/User.js';
+import { validatePasswordStrength } from '../utils/passwordPolicy.js';
 
 const JWT_SECRET = process.env.JWT_SECRET || 'your-secret-key-change-in-production';
 const SALT_ROUNDS = 10;
@@ -10,6 +11,15 @@ const SALT_ROUNDS = 10;
 export class AuthService {
   async register(input: CreateUserInput): Promise<AuthResponse> {
     try {
+      const passwordStrength = validatePasswordStrength(input.password);
+      if (!passwordStrength.isStrong) {
+        return {
+          success: false,
+          message: passwordStrength.message,
+          error: 'Weak password'
+        };
+      }
+
       // Check if user already exists
       const existingUser = await userRepository.findByEmail(input.email);
       if (existingUser) {
@@ -134,6 +144,15 @@ export class AuthService {
 
   async resetPassword(token: string, password: string): Promise<AuthResponse> {
     try {
+      const passwordStrength = validatePasswordStrength(password);
+      if (!passwordStrength.isStrong) {
+        return {
+          success: false,
+          message: passwordStrength.message,
+          error: 'Weak password'
+        };
+      }
+
       const user = await userRepository.findByResetToken(token);
       if (!user) {
         return {

@@ -15,6 +15,7 @@ export class AuthAPI {
     password: string;
     phone_number?: string;
     address?: string;
+    profile_picture?: string;
     latitude?: number;
     longitude?: number;
   }): Promise<AuthResponse> {
@@ -116,6 +117,7 @@ export class AuthAPI {
     full_name?: string;
     phone_number?: string;
     address?: string;
+    profile_picture?: string;
     latitude?: number;
     longitude?: number;
   }): Promise<AuthResponse> {

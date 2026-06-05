@@ -3,6 +3,7 @@ import { ShieldCheck, MapPin, Compass, Loader2, AlertCircle } from 'lucide-react
 import { ScreenType } from '../types';
 import imageFile from '../image/image.png';
 import { AuthAPI } from '../utils/api';
+import { validatePasswordStrength } from '../utils/passwordPolicy';
 
 interface RegistrationFormProps {
   setScreen: (screen: ScreenType) => void;
@@ -21,6 +22,7 @@ export default function RegistrationForm({ setScreen, onToast }: RegistrationFor
   const [isLocating, setIsLocating] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [formError, setFormError] = useState('');
+  const passwordStrength = validatePasswordStrength(password);
 
   const handleGetLocation = () => {
     setIsLocating(true);
@@ -43,6 +45,13 @@ export default function RegistrationForm({ setScreen, onToast }: RegistrationFor
     
     if (!fullName || !email || !password) {
       setFormError('Please fill out your name, email, and password to create the account.');
+      return;
+    }
+
+    if (!passwordStrength.isStrong) {
+      const message = 'Password is not strong enough. Please choose a stronger password.';
+      setFormError(message);
+      onToast(message, 'info');
       return;
     }
 

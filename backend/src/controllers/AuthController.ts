@@ -5,7 +5,7 @@ import type { CreateUserInput, UpdateUserInput } from '../models/User.js';
 export class AuthController {
   async register(req: Request, res: Response) {
     try {
-      const { full_name, email, password, phone_number, address, latitude, longitude } = req.body;
+      const { full_name, email, password, phone_number, address, profile_picture, latitude, longitude } = req.body;
 
       // Validate required fields
       if (!full_name || !email || !password) {
@@ -21,6 +21,7 @@ export class AuthController {
         password,
         phone_number,
         address,
+        profile_picture,
         latitude,
         longitude
       };
@@ -108,7 +109,7 @@ export class AuthController {
   async updateProfile(req: Request, res: Response) {
     try {
       const userId = (req as any).userId;
-      const { full_name, phone_number, address, latitude, longitude } = req.body;
+      const { full_name, phone_number, address, profile_picture, latitude, longitude } = req.body;
 
       if (!userId) {
         return res.status(401).json({
@@ -121,6 +122,7 @@ export class AuthController {
         full_name,
         phone_number,
         address,
+        profile_picture,
         latitude,
         longitude
       };

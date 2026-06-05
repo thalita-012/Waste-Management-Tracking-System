@@ -6,6 +6,7 @@ CREATE TABLE IF NOT EXISTS users (
   password_hash VARCHAR(255) NOT NULL,
   phone_number VARCHAR(20),
   address TEXT,
+  profile_picture TEXT,
   latitude DECIMAL(10, 8),
   longitude DECIMAL(11, 8),
   created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
@@ -17,7 +18,8 @@ CREATE INDEX IF NOT EXISTS idx_users_email ON users(email);
 
 ALTER TABLE users
   ADD COLUMN IF NOT EXISTS password_reset_token VARCHAR(255),
-  ADD COLUMN IF NOT EXISTS password_reset_expires_at TIMESTAMP;
+  ADD COLUMN IF NOT EXISTS password_reset_expires_at TIMESTAMP,
+  ADD COLUMN IF NOT EXISTS profile_picture TEXT;
 
 -- Create Trucks Table
 CREATE TABLE IF NOT EXISTS trucks (

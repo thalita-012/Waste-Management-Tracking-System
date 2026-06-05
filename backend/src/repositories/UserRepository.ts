@@ -24,12 +24,12 @@ export class UserRepository {
 
   async create(input: CreateUserInput & { password_hash: string }): Promise<User> {
     try {
-      const { full_name, email, password_hash, phone_number, address, latitude, longitude } = input;
+      const { full_name, email, password_hash, phone_number, address, profile_picture, latitude, longitude } = input;
       const result = await pool.query<User>(
-        `INSERT INTO users (full_name, email, password_hash, phone_number, address, latitude, longitude)
-         VALUES ($1, $2, $3, $4, $5, $6, $7)
+        `INSERT INTO users (full_name, email, password_hash, phone_number, address, profile_picture, latitude, longitude)
+         VALUES ($1, $2, $3, $4, $5, $6, $7, $8)
          RETURNING *`,
-        [full_name, email, password_hash, phone_number, address, latitude, longitude]
+        [full_name, email, password_hash, phone_number, address, profile_picture, latitude, longitude]
       );
       return result.rows[0] as User;
     } catch (error) {
@@ -40,18 +40,19 @@ export class UserRepository {
 
   async update(id: number, input: UpdateUserInput): Promise<User | null> {
     try {
-      const { full_name, phone_number, address, latitude, longitude } = input;
+      const { full_name, phone_number, address, profile_picture, latitude, longitude } = input;
       const result = await pool.query<User>(
         `UPDATE users SET
           full_name = COALESCE($2, full_name),
           phone_number = COALESCE($3, phone_number),
           address = COALESCE($4, address),
-          latitude = COALESCE($5, latitude),
-          longitude = COALESCE($6, longitude),
+          profile_picture = COALESCE($5, profile_picture),
+          latitude = COALESCE($6, latitude),
+          longitude = COALESCE($7, longitude),
           updated_at = CURRENT_TIMESTAMP
          WHERE id = $1
          RETURNING *`,
-        [id, full_name, phone_number, address, latitude, longitude]
+        [id, full_name, phone_number, address, profile_picture, latitude, longitude]
       );
       return result.rows[0] || null;
     } catch (error) {

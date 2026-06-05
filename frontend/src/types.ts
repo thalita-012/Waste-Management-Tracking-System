@@ -5,6 +5,7 @@ export interface UserProfile {
   email: string;
   phoneNumber: string;
   address: string;
+  profilePicture: string;
   latitude: string;
   longitude: string;
   memberSince: string;

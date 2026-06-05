@@ -5,6 +5,7 @@ export interface User {
   password_hash: string;
   phone_number?: string;
   address?: string;
+  profile_picture?: string | null;
   latitude?: number;
   longitude?: number;
   password_reset_token?: string | null;
@@ -19,6 +20,7 @@ export interface CreateUserInput {
   password: string;
   phone_number?: string;
   address?: string;
+  profile_picture?: string | null;
   latitude?: number;
   longitude?: number;
 }
@@ -27,6 +29,7 @@ export interface UpdateUserInput {
   full_name?: string;
   phone_number?: string;
   address?: string;
+  profile_picture?: string | null;
   latitude?: number;
   longitude?: number;
 }

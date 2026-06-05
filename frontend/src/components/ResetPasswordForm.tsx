@@ -2,6 +2,7 @@ import { useState, FormEvent } from 'react';
 import { KeyRound, Lock, ShieldCheck, ArrowLeft, Loader2 } from 'lucide-react';
 import { ScreenType } from '../types';
 import { AuthAPI } from '../utils/api';
+import { validatePasswordStrength } from '../utils/passwordPolicy';
 
 interface ResetPasswordFormProps {
   setScreen: (screen: ScreenType) => void;
@@ -15,6 +16,7 @@ export default function ResetPasswordForm({ setScreen, onToast, resetToken, emai
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const passwordStrength = validatePasswordStrength(password);
 
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
@@ -26,6 +28,11 @@ export default function ResetPasswordForm({ setScreen, onToast, resetToken, emai
 
     if (password !== confirmPassword) {
       onToast('Passwords do not match.', 'info');
+      return;
+    }
+
+    if (!passwordStrength.isStrong) {
+      onToast('Password is not strong enough. Please choose a stronger password.', 'info');
       return;
     }
 
