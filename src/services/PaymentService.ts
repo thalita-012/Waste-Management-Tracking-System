@@ -7,14 +7,14 @@ const require = createRequire(import.meta.url);
 const { BakongKHQR, IndividualInfo, MerchantInfo, khqrData } = require('bakong-khqr') as {
   BakongKHQR: {
     new (): {
-      generateMerchant: (merchantInfo: unknown) => {
-        status: { errorCode: number | null; message: string | null };
-        data: unknown;
-      };
-      generateIndividual: (individualInfo: unknown) => {
-        status: { errorCode: number | null; message: string | null };
-        data: unknown;
-      };
+    generateMerchant: (merchantInfo: unknown) => {
+      status: { errorCode: number | null; message: string | null };
+      data: unknown;
+    };
+    generateIndividual: (individualInfo: unknown) => {
+      status: { errorCode: number | null; message: string | null };
+      data: unknown;
+    };
     };
     verify: (qr: string) => { isValid: boolean };
     decode: (qr: string) => unknown;
@@ -106,8 +106,8 @@ export class PaymentService {
     return payment;
   }
 
-//     return payment;
-//   }
+  async verifyPayment(orderId: string) {
+    const payment = await this.paymentRepo.findByOrderId(orderId);
 
     if (!payment) {
       logger.warn('Payment not found', { orderId });
@@ -119,6 +119,7 @@ export class PaymentService {
       throw new Error('Payment does not have a KHQR MD5 value');
     }
 
+    // Don't verify if already paid
     if (payment.status === 'PAID') {
       logger.info('Payment already paid, skipping verification', { orderId });
       return {
@@ -135,6 +136,8 @@ export class PaymentService {
     const paid = this.isPaidResponse(bakongStatus);
     const transactionId = this.getTransactionId(bakongStatus);
 
+    // Fix race condition with conditional update
+    // Only update if still PENDING to prevent duplicate marking
     let updatedPayment = payment;
     if (paid && payment.status === 'PENDING') {
       logger.info('Marking payment as PAID', { orderId, transactionId });
