@@ -12,7 +12,6 @@ app.use(express.json());
 
 app.use('/api/auth', authRoutes);
 app.use('/api/payments', paymentRoutes);
-app.use('/api', paymentRoutes);
 app.use('/api', truckRoutes);
 app.use('/api/notifications', notificationRoutes);
 

@@ -1,6 +1,7 @@
 import type { Request, Response } from 'express';
 import { authService } from '../services/AuthService.js';
 import type { CreateUserInput, UpdateUserInput } from '../models/User.js';
+import type { AuthenticatedRequest } from '../middlewares/AuthMiddleware.js';
 
 export class AuthController {
   async register(req: Request, res: Response) {
@@ -106,9 +107,9 @@ export class AuthController {
     }
   }
 
-  async updateProfile(req: Request, res: Response) {
+  async updateProfile(req: AuthenticatedRequest, res: Response) {
     try {
-      const userId = (req as any).userId;
+      const userId = req.userId;
       const { full_name, phone_number, address, profile_picture, latitude, longitude } = req.body;
 
       if (!userId) {
@@ -139,9 +140,9 @@ export class AuthController {
     }
   }
 
-  async getProfile(req: Request, res: Response) {
+  async getProfile(req: AuthenticatedRequest, res: Response) {
     try {
-      const userId = (req as any).userId;
+      const userId = req.userId;
 
       if (!userId) {
         return res.status(401).json({
