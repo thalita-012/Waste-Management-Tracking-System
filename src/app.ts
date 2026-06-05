@@ -3,9 +3,14 @@ import paymentRoutes from './routes/paymentRoute.js';
 import truckRoutes from './routes/TruckRouter.js';
 import { testConnection } from './config/db.js';
 import { errorMiddleware } from './middlewares/ErrorMiddleware.js';
+import { registerRoutes } from './routes/index.js';
+import { loggerMiddleware } from './middlewares/LoggerMiddleware.js';
+import { uptime } from 'process';
+import { time, timeStamp } from 'console';
 
 const app = express();
 
+// Built-in Middleware
 app.use(express.json());
 app.use(express.static('public'));
 app.use('/api/payments', paymentRoutes);

@@ -106,8 +106,8 @@ export class PaymentService {
     return payment;
   }
 
-  async verifyPayment(orderId: string) {
-    const payment = await this.paymentRepo.findByOrderId(orderId);
+//     return payment;
+//   }
 
     if (!payment) {
       logger.warn('Payment not found', { orderId });

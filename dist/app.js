@@ -1,10 +1,21 @@
 <<<<<<< HEAD
+<<<<<<< HEAD
 import express from 'express';
 import paymentRoutes from './routes/paymentRoute.js';
 import { testConnection } from './config/db.js';
 import { errorMiddleware } from './middlewares/ErrorMiddleware.js';
+=======
+import express from 'express';
+import { registerRoutes } from './routes/index.js';
+import { errorMiddleware } from './middlewares/ErrorMiddleware.js';
+import { loggerMiddleware } from './middlewares/LoggerMiddleware.js';
+import { uptime } from 'process';
+import { time, timeStamp } from 'console';
+>>>>>>> 8e013e5188e5288da439190c7cb0560c11c6db9a
 const app = express();
+// Built-in Middleware
 app.use(express.json());
+<<<<<<< HEAD
 app.use(express.static('public'));
 app.use('/api/payments', paymentRoutes);
 app.use('/api', paymentRoutes);
@@ -48,5 +59,37 @@ app.get("/db-test", async (_req, res) => {
 app.use("/api/payments", paymentRoutes);
 app.use("/api", truckRoutes);
 >>>>>>> 2a9eb99c8fe7fc1d6f8570ba551cac7f87e9d912
+=======
+// Custom Middleware
+app.use(loggerMiddleware);
+app.get('/', (_req, res) => {
+    res.json({
+        success: true,
+        message: 'Waste Management Tracking API Running',
+    });
+});
+// Health Check
+app.get('/api/health', (_req, res) => {
+    res.status(200).json({
+        success: true,
+        message: 'Server is running',
+        uptime: process.uptime(),
+        timeStamp: new Date(),
+    });
+});
+// test api
+app.get('/api/test', (_req, res) => {
+    res.status(200).json({
+        success: true,
+        message: "Testing it working",
+        uptime: process.uptime(),
+        timeStamp: new Date(),
+    });
+});
+// Register Routes
+registerRoutes(app);
+// Error Middleware
+app.use(errorMiddleware);
+>>>>>>> 8e013e5188e5288da439190c7cb0560c11c6db9a
 export default app;
 //# sourceMappingURL=app.js.map
