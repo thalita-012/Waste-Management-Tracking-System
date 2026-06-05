@@ -1,6 +1,6 @@
 import type { Server, Socket } from "socket.io";                                                                                                                        
 import { TrackingService } from "../services/TruckService.js";
-import type { RegisterTruckData, UpdateLocationData, UpdateStatusData } from "../types/truck.types";
+import type { RegisterTruckData, UpdateLocationData, UpdateStatusData } from "../types/truck.types.js";
 
 const trackingService = new TrackingService();
 

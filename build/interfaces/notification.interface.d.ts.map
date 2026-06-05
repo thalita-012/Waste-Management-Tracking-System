@@ -1,1 +1,0 @@
-{"version":3,"file":"notification.interface.d.ts","sourceRoot":"","sources":["../../src/interfaces/notification.interface.ts"],"names":[],"mappings":"AAAA,MAAM,WAAW,YAAY;IACrB,EAAE,EAAE,MAAM,CAAC;IACX,MAAM,EAAE,MAAM,CAAC;IACf,OAAO,EAAE,MAAM,CAAC;IAChB,MAAM,EAAE,MAAM,GAAG,QAAQ,CAAC;IAC1B,QAAQ,EAAE,IAAI,CAAC;CACtB"}

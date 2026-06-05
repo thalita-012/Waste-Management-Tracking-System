@@ -60,7 +60,7 @@ export class PaymentRepository {
   }
 
   async markPaidConditional(orderId: string, expectedStatus: string, bakongTxId?: string) {
-    const result = await prisma.payment.updateMany({
+    const result: { count: number } = await prisma.payment.updateMany({
       where: {
         orderId,
         status: expectedStatus,

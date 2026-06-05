@@ -1,4 +1,4 @@
-import { Truck } from "../models/Truck";
+import { Truck } from "../models/Truck.js";
 
 export class TruckRepository {
 

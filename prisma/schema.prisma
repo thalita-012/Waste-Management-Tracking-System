@@ -1,5 +1,6 @@
 generator client {
   provider = "prisma-client-js"
+  output   = "../src/generated/prisma"
 }
 
 datasource db {
@@ -7,47 +8,62 @@ datasource db {
 }
 
 model User {
-  id            Int            @id @default(autoincrement())
-  name          String?
-  email         String?        @unique
-  password      String?
-  role          String         @default("USER")
-  createdAt     DateTime       @default(now())
-  updatedAt     DateTime       @updatedAt
-  trucks        Truck[]        @relation("DriverTrucks")
-  notifications Notification[]
+  id                      Int            @id @default(autoincrement())
+  fullName                String?        @map("full_name")
+  email                   String?        @unique
+  passwordHash            String?        @map("password_hash")
+  role                    String         @default("USER")
+  phoneNumber             String?        @map("phone_number")
+  address                 String?
+  profilePicture          String?        @map("profile_picture")
+  latitude                Float?
+  longitude               Float?
+  passwordResetToken      String?        @map("password_reset_token")
+  passwordResetExpiresAt  DateTime?      @map("password_reset_expires_at")
+  createdAt               DateTime       @default(now()) @map("created_at")
+  updatedAt               DateTime       @updatedAt     @map("updated_at")
+  trucks                  Truck[]        @relation("DriverTrucks")
+  notifications           Notification[]
+
+  @@map("users")
 }
 
 model Truck {
   id           String   @id
-  truckNumber  String   @unique
-  liveLocation String   @default("")
+  truckNumber  String   @unique @map("truck_number")
+  liveLocation String   @default("") @map("live_location")
   status       String   @default("offline")
-  driverId     Int?
+  driverId     Int?     @map("driver_id")
   driver       User?    @relation("DriverTrucks", fields: [driverId], references: [id])
-  createdAt    DateTime @default(now())
-  updatedAt    DateTime @updatedAt
+  createdAt    DateTime @default(now()) @map("created_at")
+  updatedAt    DateTime @updatedAt     @map("updated_at")
+
+  @@map("truck")
 }
 
 model Notification {
   id        Int      @id @default(autoincrement())
-  userId    Int
+  userId    Int      @map("user_id")
   user      User     @relation(fields: [userId], references: [id])
   message   String
   status    String   @default("UNREAD")
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt     @map("updated_at")
+
+  @@map("notification")
 }
 
 model Payment {
   id         Int      @id @default(autoincrement())
-  orderId    String   @unique
+  orderId    String   @unique @map("order_id")
   amount     Float
   currency   String   @default("KHR")
-  qrString   String?
-  khqrMd5    String?
-  bakongTxId String?
+  qrString   String?  @map("qr_string")
+  khqrMd5    String?  @map("khqr_md5")
+  bakongTxId String?  @map("bakong_tx_id")
   status     String   @default("PENDING")
-  createdAt  DateTime @default(now())
-  updatedAt  DateTime @updatedAt
+  createdAt  DateTime @default(now()) @map("created_at")
+  updatedAt  DateTime @updatedAt     @map("updated_at")
+
+  @@map("payment")
 }
