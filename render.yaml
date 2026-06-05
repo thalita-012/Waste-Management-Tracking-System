@@ -2,7 +2,7 @@ services:
   - type: web
     name: wmts-backend
     runtime: node
-    buildCommand: npm install && npm run db:setup && npm run build
+    buildCommand: npm install && npx prisma db push && npx prisma generate && npm run build
     startCommand: npm start
     healthCheckPath: /health
     envVars:
