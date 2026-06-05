@@ -1,6 +1,6 @@
 {
   "compilerOptions": {
-    "rootDir": "./",
+    "rootDir": "src",
     "outDir": "./dist",
     "module": "nodenext",
     "moduleResolution": "nodenext",
@@ -17,6 +17,6 @@
     "isolatedModules": true,
     "skipLibCheck": true
   },
-  "include": ["src/**/*.ts", "**/*.ts"],
-  "exclude": ["node_modules", "dist", "build"]
+  "include": ["src/**/*.ts"],
+  "exclude": ["node_modules", "dist", "build", "scripts"]
 }
