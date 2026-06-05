@@ -1,14 +1,14 @@
-import { NotificationModel } from '../models/notification.js';
+import { NotificationModel } from '../models/Notification.js';
 
 export class NotificationRepository {
   // Store notifications in memory
-  private notifications: NotificationModel[] = [];
+  private static notifications: NotificationModel[] = [];
 
   /**
    * Create and save a notification
    */
   create(notification: NotificationModel): NotificationModel {
-    this.notifications.push(notification);
+    NotificationRepository.notifications.push(notification);
 
     return notification;
   }
@@ -17,8 +17,14 @@ export class NotificationRepository {
    * Find all notifications by user ID
    */
   findByUser(userId: number): NotificationModel[] {
-    return this.notifications.filter(
+    return NotificationRepository.notifications.filter(
       (notification) => notification.userId === userId
+    );
+  }
+
+  findByUserAndMessage(userId: number, message: string): NotificationModel | undefined {
+    return NotificationRepository.notifications.find(
+      (notification) => notification.userId === userId && notification.message === message
     );
   }
 }

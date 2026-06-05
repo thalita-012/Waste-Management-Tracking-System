@@ -1,11 +1,7 @@
-import {} from 'express';
-export const errorMiddleware = (err, req, res, next) => {
-    console.error(err.stack);
-    const status = err.status || 500;
-    const message = err.message || 'Internal Server Error';
-    res.status(status).json({
+export const errorMiddleware = (error, _req, res, _next) => {
+    res.status(500).json({
         success: false,
-        message,
+        message: error.message,
     });
 };
 //# sourceMappingURL=ErrorMiddleware.js.map

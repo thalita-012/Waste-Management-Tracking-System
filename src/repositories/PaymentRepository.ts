@@ -14,9 +14,13 @@ export class PaymentRepository {
     });
   }
 
-//   async findByOrderId(orderId: string) {
-//     return await PaymentModel.findOne({ orderId });
-//   }
+  async findByOrderId(orderId: string) {
+    return await prisma.payment.findUnique({
+      where: {
+        orderId,
+      },
+    });
+  }
 
 //   async updateStatus(orderId: string, status: string) {
 //     return await PaymentModel.findOneAndUpdate(

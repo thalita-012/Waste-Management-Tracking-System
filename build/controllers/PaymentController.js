@@ -41,13 +41,15 @@ export class PaymentController {
                     return this.sendValidationError(res, validation);
                 }
                 logger.info('Verifying payment', { orderId });
-                const result = await this.paymentService.verifyPayment(orderId);
+                const userId = this.getUserId(req);
+                const result = await this.paymentService.verifyPayment(orderId, userId);
                 return res.status(200).json({
                     success: true,
                     data: {
                         orderId: result.orderId,
                         paid: result.paid,
                         status: result.status,
+                        notification: result.notification,
                     },
                 });
             }
@@ -133,6 +135,11 @@ export class PaymentController {
     }
     getOrderIdParam(req) {
         return req.params.orderId || '';
+    }
+    getUserId(req) {
+        const rawUserId = req.query.userId || req.body?.userId;
+        const userId = Number(rawUserId);
+        return Number.isFinite(userId) && userId > 0 ? userId : 1;
     }
     validateCreatePaymentInput(input) {
         return PaymentValidator.validateCreatePayment(input.orderId || '', input.amount, input.currency || 'KHR');

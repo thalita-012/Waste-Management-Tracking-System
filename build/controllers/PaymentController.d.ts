@@ -10,6 +10,7 @@ export declare class PaymentController {
     decodeKhqr: (req: Request, res: Response) => Promise<Response<any, Record<string, any>>>;
     private getCreatePaymentInput;
     private getOrderIdParam;
+    private getUserId;
     private validateCreatePaymentInput;
     private validateOrderId;
     private toCreatePaymentCommand;

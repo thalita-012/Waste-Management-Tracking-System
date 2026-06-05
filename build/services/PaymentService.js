@@ -1,12 +1,14 @@
 import { createRequire } from 'node:module';
 import { env, getRequiredConfig } from '../config/env.js';
 import { PaymentRepository } from '../repositories/PaymentRepository.js';
+import { NotificationService } from './NotificationService.js';
 import { logger } from '../utils/logger.js';
 const require = createRequire(import.meta.url);
 const { BakongKHQR, IndividualInfo, MerchantInfo, khqrData } = require('bakong-khqr');
 export class PaymentService {
     constructor() {
         this.paymentRepo = new PaymentRepository();
+        this.notificationService = new NotificationService();
     }
     async createBakongPayment(orderId, amount, currency = 'KHR') {
         if (!orderId || !amount) {
@@ -39,7 +41,7 @@ export class PaymentService {
         logger.info('Payment created successfully', { orderId, paymentId: payment.id });
         return payment;
     }
-    async verifyPayment(orderId) {
+    async verifyPayment(orderId, userId = 1) {
         const payment = await this.paymentRepo.findByOrderId(orderId);
         if (!payment) {
             logger.warn('Payment not found', { orderId });
@@ -49,31 +51,40 @@ export class PaymentService {
             logger.error('Payment has no KHQR MD5 value', { orderId, paymentId: payment.id });
             throw new Error('Payment does not have a KHQR MD5 value');
         }
+        // Don't verify if already paid
         if (payment.status === 'PAID') {
             logger.info('Payment already paid, skipping verification', { orderId });
+            const notification = this.notificationService.sendPaymentSuccessNotification(userId, payment.orderId, payment.amount, payment.currency);
             return {
                 orderId,
                 paid: true,
                 status: payment.status,
                 bakong: null,
                 payment,
+                notification,
             };
         }
         logger.info('Checking transaction status with Bakong', { orderId });
         const bakongStatus = await this.checkBakongTransaction(payment.khqrMd5);
         const paid = this.isPaidResponse(bakongStatus);
         const transactionId = this.getTransactionId(bakongStatus);
+        // Fix race condition with conditional update
+        // Only update if still PENDING to prevent duplicate marking
         let updatedPayment = payment;
         if (paid && payment.status === 'PENDING') {
             logger.info('Marking payment as PAID', { orderId, transactionId });
             updatedPayment = await this.paymentRepo.markPaidConditional(orderId, 'PENDING', transactionId);
         }
+        const notification = paid
+            ? this.notificationService.sendPaymentSuccessNotification(userId, updatedPayment.orderId, updatedPayment.amount, updatedPayment.currency)
+            : null;
         return {
             orderId,
             paid,
             status: updatedPayment.status,
             bakong: bakongStatus,
             payment: updatedPayment,
+            notification,
         };
     }
     async getPaymentByOrderId(orderId) {

@@ -12,16 +12,13 @@ export class PaymentRepository {
             },
         });
     }
-    async updateStatus(orderId, status) {
-        return await prisma.payment.update({
-            where: {
-                orderId,
-            },
-            data: {
-                status,
-            },
-        });
-    }
+    //   async updateStatus(orderId: string, status: string) {
+    //     return await PaymentModel.findOneAndUpdate(
+    //       { orderId },
+    //       { status },
+    //       { new: true }
+    //     );
+    //   }
     async refreshQr(orderId, data) {
         return await prisma.payment.update({
             where: {

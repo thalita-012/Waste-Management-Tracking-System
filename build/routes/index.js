@@ -1,6 +1,5 @@
-import type { Express } from 'express';
 import notificationRoutes from './NotificationRoutes.js';
-
-export const registerRoutes = (app: Express): void => {
+export const registerRoutes = (app) => {
     app.use('/api/notifications', notificationRoutes);
 };
+//# sourceMappingURL=index.js.map

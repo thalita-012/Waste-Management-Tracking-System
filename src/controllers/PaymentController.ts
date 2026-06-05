@@ -82,13 +82,15 @@ export class PaymentController {
 
       logger.info('Verifying payment', { orderId });
 
-      const result = await this.paymentService.verifyPayment(orderId);
+      const userId = this.getUserId(req);
+      const result = await this.paymentService.verifyPayment(orderId, userId);
       return res.status(200).json({
         success: true,
         data: {
           orderId: result.orderId,
           paid: result.paid,
           status: result.status,
+          notification: result.notification,
         },
       });
     } catch (error: unknown) {
@@ -198,6 +200,13 @@ export class PaymentController {
 
   private getOrderIdParam(req: Request) {
     return req.params.orderId || '';
+  }
+
+  private getUserId(req: Request) {
+    const rawUserId = req.query.userId || (req.body as { userId?: unknown } | undefined)?.userId;
+    const userId = Number(rawUserId);
+
+    return Number.isFinite(userId) && userId > 0 ? userId : 1;
   }
 
   private validateCreatePaymentInput(input: CreatePaymentBody): ValidationResult {

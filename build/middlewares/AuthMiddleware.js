@@ -1,3 +1,5 @@
-// AuthMiddleware logic removed. Keeping file for structure.
-export {};
+export const authMiddleware = (_req, _res, next) => {
+    console.log('Authenticated');
+    next();
+};
 //# sourceMappingURL=AuthMiddleware.js.map

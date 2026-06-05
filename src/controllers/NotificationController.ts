@@ -70,7 +70,7 @@ export class NotificationController {
     req: Request,
     res: Response
   ): void => {
-    const userId = Number(req.params.userId);
+    const userId = Number(req.params.userId || req.query.userId || req.body?.userId || 1);
 
     const notifications =
       this.notificationService.getUserNotifications(userId);

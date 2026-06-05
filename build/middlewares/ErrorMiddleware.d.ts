@@ -1,3 +1,3 @@
-import { type Request, type Response, type NextFunction } from 'express';
-export declare const errorMiddleware: (err: any, req: Request, res: Response, next: NextFunction) => void;
+import type { Request, Response, NextFunction } from 'express';
+export declare const errorMiddleware: (error: Error, _req: Request, res: Response, _next: NextFunction) => void;
 //# sourceMappingURL=ErrorMiddleware.d.ts.map

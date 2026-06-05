@@ -1,6 +1,7 @@
 import { createRequire } from 'node:module';
 import { env, getRequiredConfig } from '../config/env.js';
 import { PaymentRepository } from '../repositories/PaymentRepository.js';
+import { NotificationService } from './NotificationService.js';
 import { logger } from '../utils/logger.js';
 
 const require = createRequire(import.meta.url);
@@ -68,6 +69,7 @@ type PaymentRecord = {
 
 export class PaymentService {
   private paymentRepo = new PaymentRepository();
+  private notificationService = new NotificationService();
 
   async createBakongPayment(orderId: string, amount: number, currency: PaymentCurrency = 'KHR') {
     if (!orderId || !amount) {
@@ -106,7 +108,7 @@ export class PaymentService {
     return payment;
   }
 
-  async verifyPayment(orderId: string) {
+  async verifyPayment(orderId: string, userId = 1) {
     const payment = await this.paymentRepo.findByOrderId(orderId);
 
     if (!payment) {
@@ -122,12 +124,20 @@ export class PaymentService {
     // Don't verify if already paid
     if (payment.status === 'PAID') {
       logger.info('Payment already paid, skipping verification', { orderId });
+      const notification = this.notificationService.sendPaymentSuccessNotification(
+        userId,
+        payment.orderId,
+        payment.amount,
+        payment.currency,
+      );
+
       return {
         orderId,
         paid: true,
         status: payment.status,
         bakong: null,
         payment,
+        notification,
       };
     }
 
@@ -144,12 +154,22 @@ export class PaymentService {
       updatedPayment = await this.paymentRepo.markPaidConditional(orderId, 'PENDING', transactionId);
     }
 
+    const notification = paid
+      ? this.notificationService.sendPaymentSuccessNotification(
+          userId,
+          updatedPayment.orderId,
+          updatedPayment.amount,
+          updatedPayment.currency,
+        )
+      : null;
+
     return {
       orderId,
       paid,
       status: updatedPayment.status,
       bakong: bakongStatus,
       payment: updatedPayment,
+      notification,
     };
   }
 

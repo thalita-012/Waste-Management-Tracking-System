@@ -1,12 +1,9 @@
 import express from 'express';
 import paymentRoutes from './routes/paymentRoute.js';
 import truckRoutes from './routes/TruckRouter.js';
+import notificationRoutes from './routes/NotificationRoutes.js';
 import { testConnection } from './config/db.js';
 import { errorMiddleware } from './middlewares/ErrorMiddleware.js';
-import { registerRoutes } from './routes/index.js';
-import { loggerMiddleware } from './middlewares/LoggerMiddleware.js';
-import { uptime } from 'process';
-import { time, timeStamp } from 'console';
 
 const app = express();
 
@@ -16,6 +13,7 @@ app.use(express.static('public'));
 app.use('/api/payments', paymentRoutes);
 app.use('/api', paymentRoutes);
 app.use('/api', truckRoutes);
+app.use('/api/notifications', notificationRoutes);
 
 app.get('/health', (_req, res) => {
   res.json({

@@ -30,18 +30,6 @@ export declare class PaymentRepository {
         updatedAt: Date;
         id: number;
     } | null>;
-    updateStatus(orderId: string, status: string): Promise<{
-        orderId: string;
-        amount: number;
-        currency: string;
-        qrString: string | null;
-        khqrMd5: string | null;
-        bakongTxId: string | null;
-        status: string;
-        createdAt: Date;
-        updatedAt: Date;
-        id: number;
-    }>;
     refreshQr(orderId: string, data: {
         amount: number;
         currency: string;

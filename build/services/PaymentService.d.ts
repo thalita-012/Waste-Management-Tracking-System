@@ -15,6 +15,7 @@ type BakongCheckResponse = {
 type PaymentCurrency = 'KHR' | 'USD';
 export declare class PaymentService {
     private paymentRepo;
+    private notificationService;
     createBakongPayment(orderId: string, amount: number, currency?: PaymentCurrency): Promise<{
         orderId: string;
         amount: number;
@@ -27,7 +28,7 @@ export declare class PaymentService {
         updatedAt: Date;
         id: number;
     }>;
-    verifyPayment(orderId: string): Promise<{
+    verifyPayment(orderId: string, userId?: number): Promise<{
         orderId: string;
         paid: boolean;
         status: string;
@@ -44,6 +45,7 @@ export declare class PaymentService {
             updatedAt: Date;
             id: number;
         };
+        notification: import("../models/Notification.js").NotificationModel;
     } | {
         orderId: string;
         paid: boolean;
@@ -61,6 +63,7 @@ export declare class PaymentService {
             updatedAt: Date;
             id: number;
         };
+        notification: import("../models/Notification.js").NotificationModel | null;
     }>;
     getPaymentByOrderId(orderId: string): Promise<{
         orderId: string;
