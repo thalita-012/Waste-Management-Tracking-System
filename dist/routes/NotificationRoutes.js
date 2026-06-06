@@ -1,0 +1,12 @@
+import { Router } from 'express';
+import { NotificationController } from '../controllers/NotificationController.js';
+import { authMiddleware } from '../middlewares/AuthMiddleware.js';
+const router = Router();
+const notificationController = new NotificationController();
+router.use(authMiddleware);
+router.post('/nearby-alert', notificationController.sendNearbyAlert);
+router.post('/weekly-reminder', notificationController.sendWeeklyReminder);
+router.get('/me', notificationController.getNotifications);
+router.get('/user/:userId', notificationController.getNotifications);
+export default router;
+//# sourceMappingURL=NotificationRoutes.js.map
