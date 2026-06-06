@@ -1,5 +1,4 @@
 import { Pool } from 'pg';
-declare const pool: Pool;
-export declare function testConnection(): Promise<boolean>;
-export { pool };
+export declare const pool: Pool;
+export declare const testConnection: () => Promise<boolean>;
 //# sourceMappingURL=db.d.ts.map

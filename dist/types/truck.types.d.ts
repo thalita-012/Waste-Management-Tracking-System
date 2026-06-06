@@ -1,3 +1,7 @@
+export interface LiveLocation {
+    latitude: number;
+    longitude: number;
+}
 export interface RegisterTruckData {
     id: string;
     truckNumber: string;
@@ -5,14 +9,14 @@ export interface RegisterTruckData {
 }
 export interface UpdateLocationData {
     id: string;
-    liveLocation: {
-        lat: number;
-        lng: number;
-        timestamp?: Date;
+    liveLocation: LiveLocation;
+    targetLocation?: {
+        latitude: number;
+        longitude: number;
     };
 }
 export interface UpdateStatusData {
     id: string;
-    status: 'idle' | 'moving' | 'loading' | 'unloading' | 'offline';
+    status: 'idle' | 'moving' | 'loading' | 'unloading' | 'offline' | 'arrived';
 }
 //# sourceMappingURL=truck.types.d.ts.map

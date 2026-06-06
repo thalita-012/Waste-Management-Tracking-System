@@ -1,7 +1,4 @@
-<<<<<<< HEAD
-export {};
-=======
-import { TrackingService } from "../services/TruckService";
+import { TrackingService } from "../services/TruckService.js";
 const trackingService = new TrackingService();
 export const truckingSocket = (io) => {
     io.on("connection", (socket) => {
@@ -66,5 +63,4 @@ export const truckingSocket = (io) => {
         });
     });
 };
->>>>>>> b7808adb37a07e5f45a60d6aaf8cba3683e41758
 //# sourceMappingURL=TrackingSocket.js.map

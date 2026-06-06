@@ -1,4 +1,5 @@
 node_modules/
-.env
-.env.backup
-.env.production
+**/.env
+dist/
+
+/src/generated/prisma

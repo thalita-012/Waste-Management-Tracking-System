@@ -1,8 +1,4 @@
-<<<<<<< HEAD
-import { prisma } from '../utils/prisma.js';
-=======
-import { prisma } from '../utils/prisma';
->>>>>>> b7808adb37a07e5f45a60d6aaf8cba3683e41758
+import { prisma } from "../utils/prisma.js";
 export class PaymentRepository {
     async create(data) {
         return await prisma.payment.create({
@@ -16,17 +12,21 @@ export class PaymentRepository {
             },
         });
     }
-    async updateStatus(orderId, status) {
+    //   async updateStatus(orderId: string, status: string) {
+    //     return await PaymentModel.findOneAndUpdate(
+    //       { orderId },
+    //       { status },
+    //       { new: true }
+    //     );
+    //   }
+    async refreshQr(orderId, data) {
         return await prisma.payment.update({
             where: {
                 orderId,
             },
-            data: {
-                status,
-            },
+            data,
         });
     }
-<<<<<<< HEAD
     async markPaid(orderId, bakongTxId) {
         return await prisma.payment.update({
             where: {
@@ -39,8 +39,7 @@ export class PaymentRepository {
         });
     }
     async markPaidConditional(orderId, expectedStatus, bakongTxId) {
-        // Only update if status is still in the expected state (PENDING)
-        return await prisma.payment.updateMany({
+        const result = await prisma.payment.updateMany({
             where: {
                 orderId,
                 status: expectedStatus,
@@ -49,23 +48,15 @@ export class PaymentRepository {
                 status: 'PAID',
                 ...(bakongTxId ? { bakongTxId } : {}),
             },
-        }).then(async (result) => {
-            // If nothing was updated, it means another request already marked it as paid
-            // Return the current payment record
-            if (result.count === 0) {
-                const payment = await prisma.payment.findUnique({
-                    where: { orderId },
-                });
-                return payment;
-            }
-            // Return the updated payment
-            return await prisma.payment.findUnique({
-                where: { orderId },
-            }).then(p => p);
         });
+        const payment = await prisma.payment.findUnique({
+            where: { orderId },
+        });
+        if (!payment) {
+            throw new Error('Payment not found');
+        }
+        return payment;
     }
-=======
->>>>>>> b7808adb37a07e5f45a60d6aaf8cba3683e41758
     async saveBakongTx(orderId, bakongTxId) {
         return await prisma.payment.update({
             where: {

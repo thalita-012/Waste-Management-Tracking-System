@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 type BakongCheckResponse = {
     responseCode?: number;
     responseMessage?: string;
@@ -13,9 +12,14 @@ type BakongCheckResponse = {
         amount?: number;
     };
 };
+type PaymentCurrency = 'KHR' | 'USD';
 export declare class PaymentService {
     private paymentRepo;
-    createBakongPayment(orderId: string, amount: number, currency?: 'KHR' | 'USD'): Promise<{
+    private notificationService;
+    createBakongPayment(orderId: string, amount: number, currency?: PaymentCurrency): Promise<{
+        id: number;
+        createdAt: Date;
+        updatedAt: Date;
         orderId: string;
         amount: number;
         currency: string;
@@ -23,31 +27,16 @@ export declare class PaymentService {
         khqrMd5: string | null;
         bakongTxId: string | null;
         status: string;
-        createdAt: Date;
-        updatedAt: Date;
-        id: number;
-=======
-export declare class PaymentService {
-    private paymentRepo;
-    createBakongPayment(orderId: string, amount: number): Promise<{
-        id: string;
-        orderId: string;
-        amount: number;
-        currency: string;
-        qrString?: string;
-        bakongTxId?: string;
-        status: string;
-        createdAt: Date;
-        updatedAt: Date;
->>>>>>> b7808adb37a07e5f45a60d6aaf8cba3683e41758
     }>;
-    verifyPayment(orderId: string): Promise<{
+    verifyPayment(orderId: string, userId?: number): Promise<{
         orderId: string;
         paid: boolean;
-<<<<<<< HEAD
         status: string;
         bakong: null;
         payment: {
+            id: number;
+            createdAt: Date;
+            updatedAt: Date;
             orderId: string;
             amount: number;
             currency: string;
@@ -55,16 +44,17 @@ export declare class PaymentService {
             khqrMd5: string | null;
             bakongTxId: string | null;
             status: string;
-            createdAt: Date;
-            updatedAt: Date;
-            id: number;
         };
+        notification: import("../models/Notification.js").NotificationModel;
     } | {
         orderId: string;
         paid: boolean;
         status: string;
         bakong: BakongCheckResponse;
         payment: {
+            id: number;
+            createdAt: Date;
+            updatedAt: Date;
             orderId: string;
             amount: number;
             currency: string;
@@ -72,12 +62,13 @@ export declare class PaymentService {
             khqrMd5: string | null;
             bakongTxId: string | null;
             status: string;
-            createdAt: Date;
-            updatedAt: Date;
-            id: number;
         };
+        notification: import("../models/Notification.js").NotificationModel | null;
     }>;
     getPaymentByOrderId(orderId: string): Promise<{
+        id: number;
+        createdAt: Date;
+        updatedAt: Date;
         orderId: string;
         amount: number;
         currency: string;
@@ -85,9 +76,6 @@ export declare class PaymentService {
         khqrMd5: string | null;
         bakongTxId: string | null;
         status: string;
-        createdAt: Date;
-        updatedAt: Date;
-        id: number;
     }>;
     checkConfiguredBakongAccount(): Promise<{
         accountId: string;
@@ -101,15 +89,11 @@ export declare class PaymentService {
     private checkBakongTransaction;
     private isPaidResponse;
     private getTransactionId;
-    private getRequiredEnv;
-    private getOptionalEnv;
+    private refreshPendingPaymentQr;
+    private normalizePaymentCurrency;
     private validateKhqrMerchantConfig;
     private limitKhqrText;
     private getDynamicPaymentFields;
 }
 export {};
-=======
-    }>;
-}
->>>>>>> b7808adb37a07e5f45a60d6aaf8cba3683e41758
 //# sourceMappingURL=PaymentService.d.ts.map

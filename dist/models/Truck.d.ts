@@ -1,22 +1,18 @@
-<<<<<<< HEAD
-export {};
-=======
 export declare class Truck {
-    id: number;
+    id: string;
     truckNumber: string;
     liveLocation: string;
     status: string;
-    driveId: number;
-    constructor(id: number, truckNumber: string, driveId: number);
+    driverId: string;
+    constructor(id: string, truckNumber: string, driverId: string);
     updateLocation(location: string): void;
     updateStatus(status: string): void;
     getTruckInfo(): {
-        id: number;
+        id: string;
         truckNumber: string;
         liveLocation: string;
         status: string;
-        driveId: number;
+        driverId: string;
     };
 }
->>>>>>> b7808adb37a07e5f45a60d6aaf8cba3683e41758
 //# sourceMappingURL=Truck.d.ts.map

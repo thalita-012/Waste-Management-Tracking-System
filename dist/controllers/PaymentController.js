@@ -1,7 +1,6 @@
-<<<<<<< HEAD
-import {} from 'express';
 import QRCode from 'qrcode';
 import { PaymentService } from '../services/PaymentService.js';
+import { env } from '../config/env.js';
 import { PaymentValidator } from '../utils/validators.js';
 import { logger } from '../utils/logger.js';
 export class PaymentController {
@@ -28,37 +27,10 @@ export class PaymentController {
             }
             catch (error) {
                 return this.handleCreatePaymentError(req, res, error);
-=======
-import { PaymentService } from "../services/PaymentService";
-export class PaymentController {
-    constructor() {
-        this.paymentService = new PaymentService();
-        this.createPayment = async (req, res) => {
-            try {
-                const { orderId, amount } = req.body;
-                if (typeof orderId !== "string" || orderId.trim().length === 0) {
-                    return res.status(400).json({ success: false, message: "orderId is required" });
-                }
-                if (typeof amount !== "number" || !Number.isFinite(amount) || amount <= 0) {
-                    return res.status(400).json({ success: false, message: "amount must be a positive number" });
-                }
-                const payment = await this.paymentService.createBakongPayment(orderId, amount);
-                return res.status(201).json({
-                    success: true,
-                    data: payment,
-                });
-            }
-            catch (error) {
-                return res.status(500).json({
-                    success: false,
-                    message: error instanceof Error ? error.message : "Internal server error",
-                });
->>>>>>> b7808adb37a07e5f45a60d6aaf8cba3683e41758
             }
         };
         this.verifyPayment = async (req, res) => {
             try {
-<<<<<<< HEAD
                 const orderId = this.getOrderIdParam(req);
                 const validation = this.validateOrderId(orderId);
                 if (this.hasValidationError(validation)) {
@@ -69,13 +41,15 @@ export class PaymentController {
                     return this.sendValidationError(res, validation);
                 }
                 logger.info('Verifying payment', { orderId });
-                const result = await this.paymentService.verifyPayment(orderId);
+                const userId = this.getUserId(req);
+                const result = await this.paymentService.verifyPayment(orderId, userId);
                 return res.status(200).json({
                     success: true,
                     data: {
                         orderId: result.orderId,
                         paid: result.paid,
                         status: result.status,
+                        notification: result.notification,
                     },
                 });
             }
@@ -116,20 +90,10 @@ export class PaymentController {
                 const result = await this.paymentService.checkConfiguredBakongAccount();
                 return res.status(200).json({
                     success: true,
-=======
-                const { orderId } = req.params;
-                if (typeof orderId !== "string" || orderId.trim().length === 0) {
-                    return res.status(400).json({ success: false, message: "orderId is required" });
-                }
-                const result = await this.paymentService.verifyPayment(orderId);
-                return res.status(200).json({
-                    success: true,
->>>>>>> b7808adb37a07e5f45a60d6aaf8cba3683e41758
                     data: result,
                 });
             }
             catch (error) {
-<<<<<<< HEAD
                 const message = this.getErrorMessage(error);
                 logger.error('Bakong account check error', {
                     error: message,
@@ -171,6 +135,11 @@ export class PaymentController {
     }
     getOrderIdParam(req) {
         return req.params.orderId || '';
+    }
+    getUserId(req) {
+        const rawUserId = req.query.userId || req.body?.userId;
+        const userId = Number(rawUserId);
+        return Number.isFinite(userId) && userId > 0 ? userId : 1;
     }
     validateCreatePaymentInput(input) {
         return PaymentValidator.validateCreatePayment(input.orderId || '', input.amount, input.currency || 'KHR');
@@ -225,11 +194,13 @@ export class PaymentController {
             return res.status(400).json({
                 success: false,
                 message,
+                ...(env.nodeEnv !== 'production' ? { error: message } : {}),
             });
         }
         return res.status(500).json({
             success: false,
             message: 'Failed to create payment. Please try again later.',
+            ...(env.nodeEnv !== 'production' ? { error: message } : {}),
         });
     }
     handlePaymentLookupError(req, res, error, logMessage, clientMessage) {
@@ -254,14 +225,6 @@ export class PaymentController {
     }
     getErrorMessage(error) {
         return error instanceof Error ? error.message : String(error);
-=======
-                return res.status(500).json({
-                    success: false,
-                    message: error instanceof Error ? error.message : "Internal server error",
-                });
-            }
-        };
->>>>>>> b7808adb37a07e5f45a60d6aaf8cba3683e41758
     }
 }
 //# sourceMappingURL=PaymentController.js.map

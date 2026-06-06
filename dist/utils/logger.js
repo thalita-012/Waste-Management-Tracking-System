@@ -1,4 +1,5 @@
 // Simple structured logger for production use
+import { env } from '../config/env.js';
 class Logger {
     formatLog(level, message, data) {
         const timestamp = new Date().toISOString();
@@ -22,7 +23,7 @@ class Logger {
         console.error(JSON.stringify(log));
     }
     debug(message, data) {
-        if (process.env.NODE_ENV !== 'production') {
+        if (env.nodeEnv !== 'production') {
             const log = this.formatLog('debug', message, data);
             console.debug(JSON.stringify(log));
         }

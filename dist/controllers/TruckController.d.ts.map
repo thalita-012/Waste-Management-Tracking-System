@@ -1,5 +1,1 @@
-<<<<<<< HEAD
-{"version":3,"file":"TruckController.d.ts","sourceRoot":"","sources":["../../src/controllers/TruckController.ts"],"names":[],"mappings":"AACA,OAAO,EAAE,CAAC"}
-=======
 {"version":3,"file":"TruckController.d.ts","sourceRoot":"","sources":["../../src/controllers/TruckController.ts"],"names":[],"mappings":"AAAA,OAAO,KAAK,EAAE,OAAO,EAAE,QAAQ,EAAE,MAAM,SAAS,CAAC;AAGjD,qBAAa,eAAe;IACxB,OAAO,CAAC,YAAY,CAAe;;IAOnC,WAAW,GAAU,KAAK,OAAO,EAAE,KAAK,QAAQ,KAAG,OAAO,CAAC,IAAI,CAAC,CA4B9D;IAGF,YAAY,GAAU,KAAK,OAAO,EAAE,KAAK,QAAQ,KAAG,OAAO,CAAC,IAAI,CAAC,CA0B/D;IAGF,YAAY,GAAU,KAAK,OAAO,EAAE,KAAK,QAAQ,KAAG,OAAO,CAAC,IAAI,CAAC,CAkC/D;IAGF,mBAAmB,GAAU,KAAK,OAAO,EAAE,KAAK,QAAQ,KAAG,OAAO,CAAC,IAAI,CAAC,CAoCtE;CACL"}
->>>>>>> b7808adb37a07e5f45a60d6aaf8cba3683e41758

@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 import { type Request, type Response } from 'express';
 import { PaymentService } from '../services/PaymentService.js';
 export declare class PaymentController {
@@ -11,6 +10,7 @@ export declare class PaymentController {
     decodeKhqr: (req: Request, res: Response) => Promise<Response<any, Record<string, any>>>;
     private getCreatePaymentInput;
     private getOrderIdParam;
+    private getUserId;
     private validateCreatePaymentInput;
     private validateOrderId;
     private toCreatePaymentCommand;
@@ -22,12 +22,5 @@ export declare class PaymentController {
     private handlePaymentLookupError;
     private isBakongError;
     private getErrorMessage;
-=======
-import type { Request, Response } from "express";
-export declare class PaymentController {
-    private paymentService;
-    createPayment: (req: Request, res: Response) => Promise<Response>;
-    verifyPayment: (req: Request, res: Response) => Promise<Response>;
->>>>>>> b7808adb37a07e5f45a60d6aaf8cba3683e41758
 }
 //# sourceMappingURL=PaymentController.d.ts.map

@@ -1,6 +1,10 @@
-<<<<<<< HEAD
-// Notification model logic removed. Keeping file for structure.
-=======
->>>>>>> b7808adb37a07e5f45a60d6aaf8cba3683e41758
-export {};
+export class NotificationModel {
+    constructor(data) {
+        this.id = data.id;
+        this.userId = data.userId;
+        this.message = data.message;
+        this.status = data.status;
+        this.createAt = data.createAt;
+    }
+}
 //# sourceMappingURL=Notification.js.map

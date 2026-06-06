@@ -1,7 +1,4 @@
-<<<<<<< HEAD
-export {};
-=======
-import { Truck } from "../models/Truck";
+import { Truck } from "../models/Truck.js";
 export declare class TrackingService {
     private trucks;
     createTruck(data: {
@@ -14,7 +11,7 @@ export declare class TrackingService {
     updateTruckLocation(id: number | string, location: unknown): Truck | undefined;
     updateTruckStatus(id: number | string, status: string): Truck | undefined;
     getAllTrucks(): Truck[];
+    private normalizeId;
 }
 export { TrackingService as TruckService };
->>>>>>> b7808adb37a07e5f45a60d6aaf8cba3683e41758
 //# sourceMappingURL=TruckService.d.ts.map

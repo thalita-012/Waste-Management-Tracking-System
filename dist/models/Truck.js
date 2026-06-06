@@ -1,12 +1,8 @@
-<<<<<<< HEAD
-// Truck model logic removed. Keeping file for structure.
-export {};
-=======
 export class Truck {
-    constructor(id, truckNumber, driveId) {
+    constructor(id, truckNumber, driverId) {
         this.id = id;
         this.truckNumber = truckNumber;
-        this.driveId = driveId;
+        this.driverId = driverId;
         this.liveLocation = "";
         this.status = "offline";
     }
@@ -26,9 +22,8 @@ export class Truck {
             truckNumber: this.truckNumber,
             liveLocation: this.liveLocation,
             status: this.status,
-            driveId: this.driveId
+            driverId: this.driverId
         };
     }
 }
->>>>>>> b7808adb37a07e5f45a60d6aaf8cba3683e41758
 //# sourceMappingURL=Truck.js.map

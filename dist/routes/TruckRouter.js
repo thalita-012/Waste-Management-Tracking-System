@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { TruckController } from "../controllers/TruckController";
+import { TruckController } from "../controllers/TruckController.js";
 const router = Router();
 const truckController = new TruckController();
 router.post("/trucks", truckController.createTruck);

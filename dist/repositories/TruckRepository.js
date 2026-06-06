@@ -1,8 +1,3 @@
-<<<<<<< HEAD
-// TruckRepository logic removed. Keeping file for structure.
-export {};
-=======
-import { Truck } from "../models/Truck";
 export class TruckRepository {
     constructor() {
         this.trucks = [];
@@ -18,7 +13,8 @@ export class TruckRepository {
     }
     // Find Truck By ID
     findById(id) {
-        return this.trucks.find(truck => truck.id === id);
+        const truckId = String(id).trim();
+        return this.trucks.find(truck => truck.id === truckId);
     }
     // Update Location
     updateLocation(id, location) {
@@ -38,7 +34,8 @@ export class TruckRepository {
     }
     // Delete Truck
     delete(id) {
-        const index = this.trucks.findIndex(truck => truck.id === id);
+        const truckId = String(id).trim();
+        const index = this.trucks.findIndex(truck => truck.id === truckId);
         if (index !== -1) {
             this.trucks.splice(index, 1);
             return true;
@@ -46,5 +43,4 @@ export class TruckRepository {
         return false;
     }
 }
->>>>>>> b7808adb37a07e5f45a60d6aaf8cba3683e41758
 //# sourceMappingURL=TruckRepository.js.map

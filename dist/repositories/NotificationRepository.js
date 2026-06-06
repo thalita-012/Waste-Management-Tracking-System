@@ -1,6 +1,21 @@
-<<<<<<< HEAD
-// NotificationRepository logic removed. Keeping file for structure.
-=======
->>>>>>> b7808adb37a07e5f45a60d6aaf8cba3683e41758
-export {};
+export class NotificationRepository {
+    /**
+     * Create and save a notification
+     */
+    create(notification) {
+        NotificationRepository.notifications.push(notification);
+        return notification;
+    }
+    /**
+     * Find all notifications by user ID
+     */
+    findByUser(userId) {
+        return NotificationRepository.notifications.filter((notification) => notification.userId === userId);
+    }
+    findByUserAndMessage(userId, message) {
+        return NotificationRepository.notifications.find((notification) => notification.userId === userId && notification.message === message);
+    }
+}
+// Store notifications in memory
+NotificationRepository.notifications = [];
 //# sourceMappingURL=NotificationRepository.js.map

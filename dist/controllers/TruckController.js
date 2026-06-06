@@ -1,8 +1,4 @@
-<<<<<<< HEAD
-// Truck logic removed. Keeping file for structure.
-export {};
-=======
-import { TruckService } from "../services/TruckService";
+import { TruckService } from "../services/TruckService.js";
 export class TruckController {
     constructor() {
         // Create Truck
@@ -10,7 +6,7 @@ export class TruckController {
             try {
                 // Add validation
                 const { id, truckNumber, driverId } = req.body;
-                if (!id || !truckNumber || !driverId) {
+                if (id === undefined || !truckNumber || driverId === undefined) {
                     res.status(400).json({
                         success: false,
                         message: "Missing required fields: id, truckNumber, or driverId"
@@ -131,5 +127,4 @@ export class TruckController {
         this.truckService = new TruckService();
     }
 }
->>>>>>> b7808adb37a07e5f45a60d6aaf8cba3683e41758
 //# sourceMappingURL=TruckController.js.map
