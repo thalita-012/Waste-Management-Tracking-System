@@ -1,6 +1,7 @@
 import { type Request, type Response } from 'express';
 import QRCode from 'qrcode';
 import { PaymentService } from '../services/PaymentService.js';
+import { env } from '../config/env.js';
 import { PaymentValidator } from '../utils/validators.js';
 import { logger } from '../utils/logger.js';
 
@@ -272,12 +273,14 @@ export class PaymentController {
       return res.status(400).json({
         success: false,
         message,
+        ...(env.nodeEnv !== 'production' ? { error: message } : {}),
       });
     }
 
     return res.status(500).json({
       success: false,
       message: 'Failed to create payment. Please try again later.',
+      ...(env.nodeEnv !== 'production' ? { error: message } : {}),
     });
   }
 

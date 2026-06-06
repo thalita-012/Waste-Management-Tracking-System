@@ -11,6 +11,13 @@ model User {
   name          String?
   email         String?        @unique
   password      String?
+  phoneNumber   String?
+  address       String?
+  profilePicture String?
+  latitude      Float?
+  longitude     Float?
+  passwordResetToken String?
+  passwordResetExpiresAt DateTime?
   role          String         @default("USER")
   createdAt     DateTime       @default(now())
   updatedAt     DateTime       @updatedAt
