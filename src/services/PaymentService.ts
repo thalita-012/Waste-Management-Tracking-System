@@ -8,9 +8,12 @@ let BakongKHQR: any;
 let IndividualInfo: any;
 let MerchantInfo: any;
 let khqrData: any;
+let bakongInitialized = false;
 
-// Initialize Bakong module
+// Initialize Bakong module - wrapped to avoid top-level await
 const initBakong = async () => {
+  if (bakongInitialized) return;
+  
   try {
     // @ts-ignore
     const module = await import('bakong-khqr');
@@ -18,9 +21,10 @@ const initBakong = async () => {
     IndividualInfo = (module as any).IndividualInfo;
     MerchantInfo = (module as any).MerchantInfo;
     khqrData = (module as any).khqrData;
-    logger.info('✅ BakongKHQR module initialized');
+    bakongInitialized = true;
+    console.log('✅ BakongKHQR module initialized');
   } catch (error) {
-    logger.error('❌ Failed to initialize BakongKHQR:', error);
+    console.error('❌ Failed to initialize BakongKHQR:', error);
     // Fallback mock to prevent crashes
     BakongKHQR = {
       checkBakongAccount: async () => ({ success: false, message: 'Bakong not available' }),
@@ -32,11 +36,12 @@ const initBakong = async () => {
     IndividualInfo = class {};
     MerchantInfo = class {};
     khqrData = { currency: { khr: 1, usd: 2 } };
+    bakongInitialized = true;
   }
 };
 
-// Initialize immediately
-await initBakong();
+// Call the init function (this runs when the module loads)
+initBakong();
 
 type KhqrGenerateData = {
   qr: string;
@@ -334,7 +339,3 @@ export class PaymentService {
     };
   }
 }
-
-export const paymentService = new PaymentService();
-
-//
