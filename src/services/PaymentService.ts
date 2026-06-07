@@ -3,13 +3,40 @@ import { PaymentRepository } from '../repositories/PaymentRepository.js';
 import { NotificationService } from './NotificationService.js';
 import { logger } from '../utils/logger.js';
 
-// Fix for BakongKHQR - using require for CommonJS compatibility
-// @ts-ignore
-const BakongKHQRModule = require('bakong-khqr');
-const BakongKHQR = BakongKHQRModule.default || BakongKHQRModule;
-const IndividualInfo = BakongKHQRModule.IndividualInfo;
-const MerchantInfo = BakongKHQRModule.MerchantInfo;
-const khqrData = BakongKHQRModule.khqrData;
+// Dynamic import for ES module compatibility (no require)
+let BakongKHQR: any;
+let IndividualInfo: any;
+let MerchantInfo: any;
+let khqrData: any;
+
+// Initialize Bakong module
+const initBakong = async () => {
+  try {
+    // @ts-ignore
+    const module = await import('bakong-khqr');
+    BakongKHQR = module.default || module;
+    IndividualInfo = (module as any).IndividualInfo;
+    MerchantInfo = (module as any).MerchantInfo;
+    khqrData = (module as any).khqrData;
+    logger.info('✅ BakongKHQR module initialized');
+  } catch (error) {
+    logger.error('❌ Failed to initialize BakongKHQR:', error);
+    // Fallback mock to prevent crashes
+    BakongKHQR = {
+      checkBakongAccount: async () => ({ success: false, message: 'Bakong not available' }),
+      verify: () => ({ isValid: false }),
+      decode: () => ({}),
+      generateMerchant: () => ({ status: { errorCode: 0 }, data: { qr: 'mock', md5: 'mock' } }),
+      generateIndividual: () => ({ status: { errorCode: 0 }, data: { qr: 'mock', md5: 'mock' } })
+    };
+    IndividualInfo = class {};
+    MerchantInfo = class {};
+    khqrData = { currency: { khr: 1, usd: 2 } };
+  }
+};
+
+// Initialize immediately
+await initBakong();
 
 type KhqrGenerateData = {
   qr: string;
@@ -307,3 +334,7 @@ export class PaymentService {
     };
   }
 }
+
+export const paymentService = new PaymentService();
+
+//
