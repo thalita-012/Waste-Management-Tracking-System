@@ -37,6 +37,17 @@ app.get('/db-test', async (_req, res) => {
     message: 'Database connected successfully',
   });
 });
+app.get('/', (req, res) => {
+  res.json({
+    message: 'Waste Management Tracking System API',
+    status: 'running',
+    endpoints: {
+      auth: '/api/auth',
+      payments: '/api/payments',
+      // add your other endpoints
+    }
+  });
+});
 
 app.use(errorMiddleware);
 
