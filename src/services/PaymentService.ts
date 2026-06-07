@@ -4,7 +4,12 @@ import { NotificationService } from './NotificationService.js';
 import { logger } from '../utils/logger.js';
 
 // @ts-ignore
-import BakongKHQR, { IndividualInfo, MerchantInfo, khqrData } from 'bakong-khqr';
+import * as BakongModule from 'bakong-khqr';
+
+const BakongKHQR = (BakongModule as any).default || BakongModule;
+const IndividualInfo = (BakongModule as any).IndividualInfo;
+const MerchantInfo = (BakongModule as any).MerchantInfo;
+const khqrData = (BakongModule as any).khqrData;
 
 type KhqrGenerateData = {
   qr: string;
