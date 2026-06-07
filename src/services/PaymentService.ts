@@ -2,46 +2,16 @@ import { env, getRequiredConfig } from '../config/env.js';
 import { PaymentRepository } from '../repositories/PaymentRepository.js';
 import { NotificationService } from './NotificationService.js';
 import { logger } from '../utils/logger.js';
+import { createRequire } from 'module';
 
-// Dynamic import for ES module compatibility (no require)
-let BakongKHQR: any;
-let IndividualInfo: any;
-let MerchantInfo: any;
-let khqrData: any;
-let bakongInitialized = false;
+// Correct way to import CommonJS module in ES module
+const require = createRequire(import.meta.url);
+const BakongModule = require('bakong-khqr');
 
-// Initialize Bakong module - wrapped to avoid top-level await
-const initBakong = async () => {
-  if (bakongInitialized) return;
-  
-  try {
-    // @ts-ignore
-    const module = await import('bakong-khqr');
-    BakongKHQR = module.default || module;
-    IndividualInfo = (module as any).IndividualInfo;
-    MerchantInfo = (module as any).MerchantInfo;
-    khqrData = (module as any).khqrData;
-    bakongInitialized = true;
-    console.log('✅ BakongKHQR module initialized');
-  } catch (error) {
-    console.error('❌ Failed to initialize BakongKHQR:', error);
-    // Fallback mock to prevent crashes
-    BakongKHQR = {
-      checkBakongAccount: async () => ({ success: false, message: 'Bakong not available' }),
-      verify: () => ({ isValid: false }),
-      decode: () => ({}),
-      generateMerchant: () => ({ status: { errorCode: 0 }, data: { qr: 'mock', md5: 'mock' } }),
-      generateIndividual: () => ({ status: { errorCode: 0 }, data: { qr: 'mock', md5: 'mock' } })
-    };
-    IndividualInfo = class {};
-    MerchantInfo = class {};
-    khqrData = { currency: { khr: 1, usd: 2 } };
-    bakongInitialized = true;
-  }
-};
-
-// Call the init function (this runs when the module loads)
-initBakong();
+const BakongKHQR = BakongModule.default || BakongModule;
+const IndividualInfo = BakongModule.IndividualInfo;
+const MerchantInfo = BakongModule.MerchantInfo;
+const khqrData = BakongModule.khqrData;
 
 type KhqrGenerateData = {
   qr: string;
@@ -126,7 +96,6 @@ export class PaymentService {
       throw new Error('Payment does not have a KHQR MD5 value');
     }
 
-    // Don't verify if already paid
     if (payment.status === 'PAID') {
       logger.info('Payment already paid, skipping verification', { orderId });
       const notification = this.notificationService.sendPaymentSuccessNotification(
@@ -151,8 +120,6 @@ export class PaymentService {
     const paid = this.isPaidResponse(bakongStatus);
     const transactionId = this.getTransactionId(bakongStatus);
 
-    // Fix race condition with conditional update
-    // Only update if still PENDING to prevent duplicate marking
     let updatedPayment = payment;
     if (paid && payment.status === 'PENDING') {
       logger.info('Marking payment as PAID', { orderId, transactionId });
