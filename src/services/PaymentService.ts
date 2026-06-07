@@ -1,42 +1,10 @@
-import { createRequire } from 'node:module';
 import { env, getRequiredConfig } from '../config/env.js';
 import { PaymentRepository } from '../repositories/PaymentRepository.js';
 import { NotificationService } from './NotificationService.js';
 import { logger } from '../utils/logger.js';
 
-const requireFrom = createRequire(__filename);
-const { BakongKHQR, IndividualInfo, MerchantInfo, khqrData } = requireFrom('bakong-khqr') as {
-  BakongKHQR: {
-    new (): {
-    generateMerchant: (merchantInfo: unknown) => {
-      status: { errorCode: number | null; message: string | null };
-      data: unknown;
-    };
-    generateIndividual: (individualInfo: unknown) => {
-      status: { errorCode: number | null; message: string | null };
-      data: unknown;
-    };
-    };
-    verify: (qr: string) => { isValid: boolean };
-    decode: (qr: string) => unknown;
-    checkBakongAccount: (url: string, accountId: string) => Promise<unknown>;
-  };
-  IndividualInfo: new (
-    bakongAccountId: string,
-    merchantName: string,
-    merchantCity: string,
-    optionalData: Record<string, unknown>,
-  ) => unknown;
-  MerchantInfo: new (
-    bakongAccountId: string,
-    merchantName: string,
-    merchantCity: string,
-    merchantId: string,
-    acquiringBank: string,
-    optionalData: Record<string, unknown>,
-  ) => unknown;
-  khqrData: { currency: { khr: number; usd: number } };
-};
+// @ts-ignore
+import BakongKHQR, { IndividualInfo, MerchantInfo, khqrData } from 'bakong-khqr';
 
 type KhqrGenerateData = {
   qr: string;
