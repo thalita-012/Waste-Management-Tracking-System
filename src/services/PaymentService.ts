@@ -4,20 +4,19 @@ import { NotificationService } from './NotificationService.js';
 import { logger } from '../utils/logger.js';
 import { createRequire } from 'module';
 
-// ONLY use createRequire - remove the direct import
+// This is the ONLY import method - using createRequire
 const require = createRequire(import.meta.url);
 const BakongModule = require('bakong-khqr');
 
-const BakongKHQR = BakongModule.default || BakongModule;
+const BakongKHQR = BakongModule.BakongKHQR || BakongModule.default || BakongModule;
 const IndividualInfo = BakongModule.IndividualInfo;
 const MerchantInfo = BakongModule.MerchantInfo;
 const khqrData = BakongModule.khqrData;
 
-// Debug log to check what we got
-console.log('=== Bakong Module Debug ===');
-console.log('Type of BakongKHQR:', typeof BakongKHQR);
-console.log('Is it a constructor?', typeof BakongKHQR === 'function');
-console.log('Keys:', Object.keys(BakongModule));
+// Debug log - check Render logs after deploy
+console.log('=== Bakong Module Loaded ===');
+console.log('BakongKHQR type:', typeof BakongKHQR);
+console.log('Is constructor?', typeof BakongKHQR === 'function');
 
 type KhqrGenerateData = {
   qr: string;
