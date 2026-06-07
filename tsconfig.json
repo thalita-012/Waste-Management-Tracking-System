@@ -18,6 +18,12 @@
     "isolatedModules": true,
     "skipLibCheck": true
   },
-  "include": ["**/*.ts"],
-  "exclude": ["node_modules", "dist", "build"]
+  "include": ["src/**/*.ts"],
+  "exclude": [
+    "node_modules",
+    "test-*.ts",
+    "prisma.config.ts",
+    "dist",
+    "scripts"
+  ]
 }
