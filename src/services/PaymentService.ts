@@ -3,8 +3,8 @@ import { PaymentRepository } from '../repositories/PaymentRepository.js';
 import { NotificationService } from './NotificationService.js';
 import { logger } from '../utils/logger.js';
 import { createRequire } from 'module';
-import { BakongKHQR, khqrData, IndividualInfo, MerchantInfo } from 'bakong-khqr';
-// Correct way to import CommonJS module in ES module
+
+// ONLY use createRequire - remove the direct import
 const require = createRequire(import.meta.url);
 const BakongModule = require('bakong-khqr');
 
@@ -12,6 +12,12 @@ const BakongKHQR = BakongModule.default || BakongModule;
 const IndividualInfo = BakongModule.IndividualInfo;
 const MerchantInfo = BakongModule.MerchantInfo;
 const khqrData = BakongModule.khqrData;
+
+// Debug log to check what we got
+console.log('=== Bakong Module Debug ===');
+console.log('Type of BakongKHQR:', typeof BakongKHQR);
+console.log('Is it a constructor?', typeof BakongKHQR === 'function');
+console.log('Keys:', Object.keys(BakongModule));
 
 type KhqrGenerateData = {
   qr: string;
