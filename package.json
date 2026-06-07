@@ -4,13 +4,13 @@
   "description": "A waste management tracking system backend",
   "main": "dist/server.js",
   "type": "module",
- "scripts": {
+  "scripts": {
     "build": "tsc",
     "db:setup": "node scripts/setup-database.mjs",
     "start": "node dist/server.js",
     "dev": "npx nodemon --watch src --ext ts --exec \"npm run build && node dist/server.js\"",
     "watch": "tsc --watch"
-},
+  },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/thalita-012/Waste-Management-Tracking-System.git"

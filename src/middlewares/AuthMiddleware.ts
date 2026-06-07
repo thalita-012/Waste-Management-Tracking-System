@@ -1,6 +1,7 @@
 import type { Request, Response, NextFunction } from 'express';
 import { authService } from '../services/AuthService.js';
 
+// Fix: Properly extend the full Request type
 export interface AuthenticatedRequest extends Request {
   userId?: number;
 }
