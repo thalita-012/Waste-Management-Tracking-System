@@ -1,11 +1,12 @@
 import { Request, Response, NextFunction } from 'express';
 import { authService } from '../services/AuthService.js';
 
+// This interface extends the Express Request type
 export interface AuthenticatedRequest extends Request {
   userId?: number;
 }
 
-export function authMiddleware(req: AuthenticatedRequest, res: Response, next: NextFunction) {
+export function authMiddleware(req: Request, res: Response, next: NextFunction) {
   try {
     const authHeader = req.headers.authorization;
     if (!authHeader || !authHeader.startsWith('Bearer ')) {
@@ -25,7 +26,8 @@ export function authMiddleware(req: AuthenticatedRequest, res: Response, next: N
       });
     }
 
-    req.userId = decoded.id;
+    // Cast the request to AuthenticatedRequest to add userId
+    (req as AuthenticatedRequest).userId = decoded.id;
     next();
   } catch (error) {
     return res.status(401).json({
