@@ -1,5 +1,8 @@
-import { authService } from '../services/AuthService.js';
-export function authMiddleware(req, res, next) {
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.authMiddleware = authMiddleware;
+const AuthService_js_1 = require("../services/AuthService.js");
+function authMiddleware(req, res, next) {
     try {
         const authHeader = req.headers.authorization;
         if (!authHeader || !authHeader.startsWith('Bearer ')) {
@@ -9,7 +12,7 @@ export function authMiddleware(req, res, next) {
             });
         }
         const token = authHeader.substring(7);
-        const decoded = authService.verifyToken(token);
+        const decoded = AuthService_js_1.authService.verifyToken(token);
         if (!decoded) {
             return res.status(401).json({
                 success: false,

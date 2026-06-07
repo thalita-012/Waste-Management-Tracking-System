@@ -1,4 +1,7 @@
-export class TruckRepository {
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.TruckRepository = void 0;
+class TruckRepository {
     constructor() {
         this.trucks = [];
     }
@@ -43,4 +46,5 @@ export class TruckRepository {
         return false;
     }
 }
+exports.TruckRepository = TruckRepository;
 //# sourceMappingURL=TruckRepository.js.map

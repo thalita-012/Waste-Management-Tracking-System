@@ -7,4 +7,3 @@ export declare class NotificationModel implements Notification {
     createAt: Date;
     constructor(data: Notification);
 }
-//# sourceMappingURL=Notification.d.ts.map

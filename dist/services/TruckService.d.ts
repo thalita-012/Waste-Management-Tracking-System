@@ -14,4 +14,3 @@ export declare class TrackingService {
     private normalizeId;
 }
 export { TrackingService as TruckService };
-//# sourceMappingURL=TruckService.d.ts.map

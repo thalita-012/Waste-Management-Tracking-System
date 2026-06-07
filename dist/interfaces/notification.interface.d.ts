@@ -5,4 +5,3 @@ export interface Notification {
     status: "READ" | "UNREAD";
     createAt: Date;
 }
-//# sourceMappingURL=notification.interface.d.ts.map

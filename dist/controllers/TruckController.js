@@ -1,5 +1,8 @@
-import { TruckService } from "../services/TruckService.js";
-export class TruckController {
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.TruckController = void 0;
+const TruckService_js_1 = require("../services/TruckService.js");
+class TruckController {
     constructor() {
         // Create Truck
         this.createTruck = async (req, res) => {
@@ -124,7 +127,8 @@ export class TruckController {
                 });
             }
         };
-        this.truckService = new TruckService();
+        this.truckService = new TruckService_js_1.TruckService();
     }
 }
+exports.TruckController = TruckController;
 //# sourceMappingURL=TruckController.js.map

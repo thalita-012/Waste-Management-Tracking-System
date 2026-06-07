@@ -1,5 +1,8 @@
-import { prisma } from '../utils/prisma.js';
-export class UserRepository {
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.userRepository = exports.UserRepository = void 0;
+const prisma_js_1 = require("../utils/prisma.js");
+class UserRepository {
     mapPrismaUser(prismaUser) {
         if (!prismaUser)
             return null;
@@ -21,7 +24,7 @@ export class UserRepository {
     }
     async findByEmail(email) {
         try {
-            const u = await prisma.user.findUnique({ where: { email } });
+            const u = await prisma_js_1.prisma.user.findUnique({ where: { email } });
             return this.mapPrismaUser(u);
         }
         catch (error) {
@@ -31,7 +34,7 @@ export class UserRepository {
     }
     async findById(id) {
         try {
-            const u = await prisma.user.findUnique({ where: { id } });
+            const u = await prisma_js_1.prisma.user.findUnique({ where: { id } });
             return this.mapPrismaUser(u);
         }
         catch (error) {
@@ -57,7 +60,7 @@ export class UserRepository {
                 data.latitude = input.latitude;
             if (input.longitude !== undefined)
                 data.longitude = input.longitude;
-            const created = await prisma.user.create({ data });
+            const created = await prisma_js_1.prisma.user.create({ data });
             return this.mapPrismaUser(created);
         }
         catch (error) {
@@ -80,7 +83,7 @@ export class UserRepository {
                 data.latitude = input.latitude;
             if (input.longitude !== undefined)
                 data.longitude = input.longitude;
-            const updated = await prisma.user.update({ where: { id }, data });
+            const updated = await prisma_js_1.prisma.user.update({ where: { id }, data });
             return this.mapPrismaUser(updated);
         }
         catch (error) {
@@ -90,7 +93,7 @@ export class UserRepository {
     }
     async updatePasswordResetToken(userId, token, expiresAt) {
         try {
-            const updated = await prisma.user.update({ where: { id: userId }, data: { passwordResetToken: token, passwordResetExpiresAt: expiresAt } });
+            const updated = await prisma_js_1.prisma.user.update({ where: { id: userId }, data: { passwordResetToken: token, passwordResetExpiresAt: expiresAt } });
             return this.mapPrismaUser(updated);
         }
         catch (error) {
@@ -100,7 +103,7 @@ export class UserRepository {
     }
     async findByResetToken(token) {
         try {
-            const u = await prisma.user.findFirst({ where: { passwordResetToken: token, passwordResetExpiresAt: { gt: new Date() } } });
+            const u = await prisma_js_1.prisma.user.findFirst({ where: { passwordResetToken: token, passwordResetExpiresAt: { gt: new Date() } } });
             return this.mapPrismaUser(u);
         }
         catch (error) {
@@ -110,7 +113,7 @@ export class UserRepository {
     }
     async resetPassword(userId, password_hash) {
         try {
-            const updated = await prisma.user.update({ where: { id: userId }, data: { password: password_hash, passwordResetToken: null, passwordResetExpiresAt: null } });
+            const updated = await prisma_js_1.prisma.user.update({ where: { id: userId }, data: { password: password_hash, passwordResetToken: null, passwordResetExpiresAt: null } });
             return this.mapPrismaUser(updated);
         }
         catch (error) {
@@ -120,7 +123,7 @@ export class UserRepository {
     }
     async delete(id) {
         try {
-            await prisma.user.delete({ where: { id } });
+            await prisma_js_1.prisma.user.delete({ where: { id } });
             return true;
         }
         catch (error) {
@@ -129,5 +132,6 @@ export class UserRepository {
         }
     }
 }
-export const userRepository = new UserRepository();
+exports.UserRepository = UserRepository;
+exports.userRepository = new UserRepository();
 //# sourceMappingURL=UserRepository.js.map

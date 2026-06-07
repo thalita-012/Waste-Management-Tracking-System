@@ -1,4 +1,7 @@
-export class Truck {
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.Truck = void 0;
+class Truck {
     constructor(id, truckNumber, driverId) {
         this.id = id;
         this.truckNumber = truckNumber;
@@ -26,4 +29,5 @@ export class Truck {
         };
     }
 }
+exports.Truck = Truck;
 //# sourceMappingURL=Truck.js.map

@@ -7,21 +7,20 @@ export declare const env: {
         host: string;
         port: number;
         user: string;
-        password: string | undefined;
+        password: string;
         name: string;
         url: string;
     };
     bakong: {
-        apiBaseUrl: string | undefined;
-        apiToken: string | undefined;
-        accountId: string | undefined;
-        accountInformation: string | undefined;
-        merchantName: string | undefined;
+        apiBaseUrl: string;
+        apiToken: string;
+        accountId: string;
+        accountInformation: string;
+        merchantName: string;
         merchantCity: string;
-        merchantId: string | undefined;
-        acquiringBank: string | undefined;
+        merchantId: string;
+        acquiringBank: string;
         qrExpirationMinutes: number;
     };
 };
 export declare const getRequiredConfig: (name: string, value?: string) => string;
-//# sourceMappingURL=env.d.ts.map

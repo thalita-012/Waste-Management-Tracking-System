@@ -1,5 +1,8 @@
-import { Truck } from "../models/Truck.js";
-export class TrackingService {
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.TruckService = exports.TrackingService = void 0;
+const Truck_js_1 = require("../models/Truck.js");
+class TrackingService {
     constructor() {
         this.trucks = [];
     }
@@ -10,7 +13,7 @@ export class TrackingService {
         if (!id || !driverId) {
             throw new Error("Invalid id or driverId");
         }
-        const truck = new Truck(id, data.truckNumber, driverId);
+        const truck = new Truck_js_1.Truck(id, data.truckNumber, driverId);
         return this.addTruck(truck);
     }
     // Add truck
@@ -56,6 +59,6 @@ export class TrackingService {
         return String(id).trim();
     }
 }
-// Backwards-compatible name for newer code
-export { TrackingService as TruckService };
+exports.TrackingService = TrackingService;
+exports.TruckService = TrackingService;
 //# sourceMappingURL=TruckService.js.map

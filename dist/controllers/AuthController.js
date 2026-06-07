@@ -1,5 +1,8 @@
-import { authService } from '../services/AuthService.js';
-export class AuthController {
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.authController = exports.AuthController = void 0;
+const AuthService_js_1 = require("../services/AuthService.js");
+class AuthController {
     async register(req, res) {
         try {
             const { full_name, email, password, phone_number, address, profile_picture, latitude, longitude } = req.body;
@@ -20,7 +23,7 @@ export class AuthController {
                 latitude,
                 longitude
             };
-            const result = await authService.register(input);
+            const result = await AuthService_js_1.authService.register(input);
             const statusCode = result.success ? 201 : 400;
             return res.status(statusCode).json(result);
         }
@@ -42,7 +45,7 @@ export class AuthController {
                     message: 'Email and password are required'
                 });
             }
-            const result = await authService.login(email, password);
+            const result = await AuthService_js_1.authService.login(email, password);
             const statusCode = result.success ? 200 : 401;
             return res.status(statusCode).json(result);
         }
@@ -63,7 +66,7 @@ export class AuthController {
                     message: 'Email is required'
                 });
             }
-            const result = await authService.requestPasswordReset(email);
+            const result = await AuthService_js_1.authService.requestPasswordReset(email);
             const statusCode = result.success ? 200 : 400;
             return res.status(statusCode).json(result);
         }
@@ -84,7 +87,7 @@ export class AuthController {
                     message: 'Reset token and new password are required'
                 });
             }
-            const result = await authService.resetPassword(token, password);
+            const result = await AuthService_js_1.authService.resetPassword(token, password);
             const statusCode = result.success ? 200 : 400;
             return res.status(statusCode).json(result);
         }
@@ -114,7 +117,7 @@ export class AuthController {
                 latitude,
                 longitude
             };
-            const result = await authService.updateProfile(userId, input);
+            const result = await AuthService_js_1.authService.updateProfile(userId, input);
             const statusCode = result.success ? 200 : 400;
             return res.status(statusCode).json(result);
         }
@@ -135,7 +138,7 @@ export class AuthController {
                     message: 'Unauthorized'
                 });
             }
-            const result = await authService.getUserProfile(userId);
+            const result = await AuthService_js_1.authService.getUserProfile(userId);
             const statusCode = result.success ? 200 : 404;
             return res.status(statusCode).json(result);
         }
@@ -148,5 +151,6 @@ export class AuthController {
         }
     }
 }
-export const authController = new AuthController();
+exports.AuthController = AuthController;
+exports.authController = new AuthController();
 //# sourceMappingURL=AuthController.js.map

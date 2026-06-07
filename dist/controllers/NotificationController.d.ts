@@ -14,4 +14,3 @@ export declare class NotificationController {
      */
     getNotifications: (req: Request, res: Response) => void;
 }
-//# sourceMappingURL=NotificationController.d.ts.map

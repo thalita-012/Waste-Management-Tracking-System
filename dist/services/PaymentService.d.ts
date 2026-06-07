@@ -32,24 +32,6 @@ export declare class PaymentService {
         orderId: string;
         paid: boolean;
         status: string;
-        bakong: null;
-        payment: {
-            id: number;
-            createdAt: Date;
-            updatedAt: Date;
-            orderId: string;
-            amount: number;
-            currency: string;
-            qrString: string | null;
-            khqrMd5: string | null;
-            bakongTxId: string | null;
-            status: string;
-        };
-        notification: import("../models/Notification.js").NotificationModel;
-    } | {
-        orderId: string;
-        paid: boolean;
-        status: string;
         bakong: BakongCheckResponse;
         payment: {
             id: number;
@@ -63,7 +45,7 @@ export declare class PaymentService {
             bakongTxId: string | null;
             status: string;
         };
-        notification: import("../models/Notification.js").NotificationModel | null;
+        notification: import("../models/Notification.js").NotificationModel;
     }>;
     getPaymentByOrderId(orderId: string): Promise<{
         id: number;
@@ -96,4 +78,3 @@ export declare class PaymentService {
     private getDynamicPaymentFields;
 }
 export {};
-//# sourceMappingURL=PaymentService.d.ts.map

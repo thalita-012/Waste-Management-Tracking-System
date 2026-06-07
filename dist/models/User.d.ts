@@ -38,4 +38,3 @@ export interface AuthResponse {
     user?: Omit<User, 'password_hash'>;
     error?: string;
 }
-//# sourceMappingURL=User.d.ts.map

@@ -1,9 +1,12 @@
-import { NotificationModel } from '../models/Notification.js';
-import { NotificationRepository } from '../repositories/NotificationRepository.js';
-import { DistanceUtil } from '../utils/distance.util.js';
-export class NotificationService {
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.NotificationService = void 0;
+const Notification_js_1 = require("../models/Notification.js");
+const NotificationRepository_js_1 = require("../repositories/NotificationRepository.js");
+const distance_util_js_1 = require("../utils/distance.util.js");
+class NotificationService {
     constructor() {
-        this.notificationRepository = new NotificationRepository();
+        this.notificationRepository = new NotificationRepository_js_1.NotificationRepository();
     }
     sendPaymentSuccessNotification(userId, orderId, amount, currency) {
         const normalizedUserId = this.normalizeUserId(userId);
@@ -12,7 +15,7 @@ export class NotificationService {
         if (existingNotification) {
             return existingNotification;
         }
-        const notification = new NotificationModel({
+        const notification = new Notification_js_1.NotificationModel({
             id: Date.now(),
             userId: normalizedUserId,
             message,
@@ -23,11 +26,11 @@ export class NotificationService {
     }
     // Send notification when truck is nearby
     sendTruckNearbyNotification(userId, truckLat, truckLng, userLat, userLng) {
-        const distance = DistanceUtil.calculateDistance(truckLat, truckLng, userLat, userLng);
+        const distance = distance_util_js_1.DistanceUtil.calculateDistance(truckLat, truckLng, userLat, userLng);
         if (distance >= 0.05) {
             return null;
         }
-        const notification = new NotificationModel({
+        const notification = new Notification_js_1.NotificationModel({
             id: Date.now(),
             userId: this.normalizeUserId(userId),
             message: 'The garbage truck will arrive in 10 minutes.',
@@ -38,7 +41,7 @@ export class NotificationService {
     }
     // Send weekly garbage collection reminder
     sendWeeklyReminder(userId) {
-        const notification = new NotificationModel({
+        const notification = new Notification_js_1.NotificationModel({
             id: Date.now(),
             userId: this.normalizeUserId(userId),
             message: 'Reminder: Garbage collection is every Monday and Thursday.',
@@ -55,4 +58,5 @@ export class NotificationService {
         return Number.isFinite(Number(userId)) && Number(userId) > 0 ? Number(userId) : 1;
     }
 }
+exports.NotificationService = NotificationService;
 //# sourceMappingURL=NotificationService.js.map

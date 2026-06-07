@@ -1,6 +1,9 @@
-import { TrackingService } from "../services/TruckService.js";
-const trackingService = new TrackingService();
-export const truckingSocket = (io) => {
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.truckingSocket = void 0;
+const TruckService_js_1 = require("../services/TruckService.js");
+const trackingService = new TruckService_js_1.TrackingService();
+const truckingSocket = (io) => {
     io.on("connection", (socket) => {
         console.log("Client Connected:", socket.id);
         socket.on("registerTruck", (data) => {
@@ -63,4 +66,5 @@ export const truckingSocket = (io) => {
         });
     });
 };
+exports.truckingSocket = truckingSocket;
 //# sourceMappingURL=TrackingSocket.js.map

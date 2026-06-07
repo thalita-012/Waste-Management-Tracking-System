@@ -4,4 +4,3 @@ export interface PasswordPolicyResult {
     issues: string[];
 }
 export declare function validatePasswordStrength(password: string): PasswordPolicyResult;
-//# sourceMappingURL=passwordPolicy.d.ts.map

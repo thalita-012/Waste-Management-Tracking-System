@@ -4,8 +4,8 @@ import { PaymentRepository } from '../repositories/PaymentRepository.js';
 import { NotificationService } from './NotificationService.js';
 import { logger } from '../utils/logger.js';
 
-const require = createRequire(import.meta.url);
-const { BakongKHQR, IndividualInfo, MerchantInfo, khqrData } = require('bakong-khqr') as {
+const requireFrom = createRequire(__filename);
+const { BakongKHQR, IndividualInfo, MerchantInfo, khqrData } = requireFrom('bakong-khqr') as {
   BakongKHQR: {
     new (): {
     generateMerchant: (merchantInfo: unknown) => {

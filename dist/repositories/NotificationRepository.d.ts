@@ -11,4 +11,3 @@ export declare class NotificationRepository {
     findByUser(userId: number): NotificationModel[];
     findByUserAndMessage(userId: number, message: string): NotificationModel | undefined;
 }
-//# sourceMappingURL=NotificationRepository.d.ts.map

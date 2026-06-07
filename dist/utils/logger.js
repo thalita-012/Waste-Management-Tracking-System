@@ -1,5 +1,8 @@
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.logger = void 0;
 // Simple structured logger for production use
-import { env } from '../config/env.js';
+const env_js_1 = require("../config/env.js");
 class Logger {
     formatLog(level, message, data) {
         const timestamp = new Date().toISOString();
@@ -23,11 +26,11 @@ class Logger {
         console.error(JSON.stringify(log));
     }
     debug(message, data) {
-        if (env.nodeEnv !== 'production') {
+        if (env_js_1.env.nodeEnv !== 'production') {
             const log = this.formatLog('debug', message, data);
             console.debug(JSON.stringify(log));
         }
     }
 }
-export const logger = new Logger();
+exports.logger = new Logger();
 //# sourceMappingURL=logger.js.map

@@ -1,12 +1,15 @@
-import { prisma } from "../utils/prisma.js";
-export class PaymentRepository {
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.PaymentRepository = void 0;
+const prisma_js_1 = require("../utils/prisma.js");
+class PaymentRepository {
     async create(data) {
-        return await prisma.payment.create({
+        return await prisma_js_1.prisma.payment.create({
             data,
         });
     }
     async findByOrderId(orderId) {
-        return await prisma.payment.findUnique({
+        return await prisma_js_1.prisma.payment.findUnique({
             where: {
                 orderId,
             },
@@ -20,7 +23,7 @@ export class PaymentRepository {
     //     );
     //   }
     async refreshQr(orderId, data) {
-        return await prisma.payment.update({
+        return await prisma_js_1.prisma.payment.update({
             where: {
                 orderId,
             },
@@ -28,7 +31,7 @@ export class PaymentRepository {
         });
     }
     async markPaid(orderId, bakongTxId) {
-        return await prisma.payment.update({
+        return await prisma_js_1.prisma.payment.update({
             where: {
                 orderId,
             },
@@ -39,7 +42,7 @@ export class PaymentRepository {
         });
     }
     async markPaidConditional(orderId, expectedStatus, bakongTxId) {
-        const result = await prisma.payment.updateMany({
+        const result = await prisma_js_1.prisma.payment.updateMany({
             where: {
                 orderId,
                 status: expectedStatus,
@@ -49,7 +52,7 @@ export class PaymentRepository {
                 ...(bakongTxId ? { bakongTxId } : {}),
             },
         });
-        const payment = await prisma.payment.findUnique({
+        const payment = await prisma_js_1.prisma.payment.findUnique({
             where: { orderId },
         });
         if (!payment) {
@@ -58,7 +61,7 @@ export class PaymentRepository {
         return payment;
     }
     async saveBakongTx(orderId, bakongTxId) {
-        return await prisma.payment.update({
+        return await prisma_js_1.prisma.payment.update({
             where: {
                 orderId,
             },
@@ -68,4 +71,5 @@ export class PaymentRepository {
         });
     }
 }
+exports.PaymentRepository = PaymentRepository;
 //# sourceMappingURL=PaymentRepository.js.map

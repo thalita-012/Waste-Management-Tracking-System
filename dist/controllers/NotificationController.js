@@ -1,7 +1,10 @@
-import { NotificationService } from '../services/NotificationService.js';
-export class NotificationController {
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.NotificationController = void 0;
+const NotificationService_js_1 = require("../services/NotificationService.js");
+class NotificationController {
     constructor() {
-        this.notificationService = new NotificationService();
+        this.notificationService = new NotificationService_js_1.NotificationService();
         /**
          * Send notification when truck is nearby
          */
@@ -48,4 +51,5 @@ export class NotificationController {
         };
     }
 }
+exports.NotificationController = NotificationController;
 //# sourceMappingURL=NotificationController.js.map

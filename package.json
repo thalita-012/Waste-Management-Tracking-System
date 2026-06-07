@@ -5,7 +5,7 @@
   "main": "dist/server.js",
   "type": "module",
   "scripts": {
-    "build": "tsc",
+    "build": "npx prisma generate && tsc --noEmitOnError false",
     "db:setup": "node scripts/setup-database.mjs",
     "start": "node dist/server.js",
     "dev": "npx nodemon --watch src --ext ts --exec \"npm run build && node dist/server.js\"",

@@ -1,3 +1,6 @@
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.validatePasswordStrength = validatePasswordStrength;
 const MIN_PASSWORD_LENGTH = 8;
 const joinRequirements = (requirements) => {
     if (requirements.length === 0) {
@@ -11,7 +14,7 @@ const joinRequirements = (requirements) => {
     }
     return `${requirements.slice(0, -1).join(', ')}, and ${requirements[requirements.length - 1]}`;
 };
-export function validatePasswordStrength(password) {
+function validatePasswordStrength(password) {
     const issues = [];
     if (password.length < MIN_PASSWORD_LENGTH) {
         issues.push(`at least ${MIN_PASSWORD_LENGTH} characters`);

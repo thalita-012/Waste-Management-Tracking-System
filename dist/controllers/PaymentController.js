@@ -1,24 +1,30 @@
-import QRCode from 'qrcode';
-import { PaymentService } from '../services/PaymentService.js';
-import { env } from '../config/env.js';
-import { PaymentValidator } from '../utils/validators.js';
-import { logger } from '../utils/logger.js';
-export class PaymentController {
-    constructor(paymentService = new PaymentService()) {
+"use strict";
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.PaymentController = void 0;
+const qrcode_1 = __importDefault(require("qrcode"));
+const PaymentService_js_1 = require("../services/PaymentService.js");
+const env_js_1 = require("../config/env.js");
+const validators_js_1 = require("../utils/validators.js");
+const logger_js_1 = require("../utils/logger.js");
+class PaymentController {
+    constructor(paymentService = new PaymentService_js_1.PaymentService()) {
         this.paymentService = paymentService;
         this.createPayment = async (req, res) => {
             try {
                 const input = this.getCreatePaymentInput(req);
                 const validation = this.validateCreatePaymentInput(input);
                 if (this.hasValidationError(validation)) {
-                    logger.warn('Payment creation validation failed', {
+                    logger_js_1.logger.warn('Payment creation validation failed', {
                         orderId: input.orderId,
                         errors: validation.errors,
                     });
                     return this.sendValidationError(res, validation);
                 }
                 const command = this.toCreatePaymentCommand(input);
-                logger.info('Creating payment', command);
+                logger_js_1.logger.info('Creating payment', command);
                 const payment = await this.paymentService.createBakongPayment(command.orderId, command.amount, command.currency);
                 return res.status(201).json({
                     success: true,
@@ -34,13 +40,13 @@ export class PaymentController {
                 const orderId = this.getOrderIdParam(req);
                 const validation = this.validateOrderId(orderId);
                 if (this.hasValidationError(validation)) {
-                    logger.warn('Payment verification validation failed', {
+                    logger_js_1.logger.warn('Payment verification validation failed', {
                         orderId,
                         errors: validation.errors,
                     });
                     return this.sendValidationError(res, validation);
                 }
-                logger.info('Verifying payment', { orderId });
+                logger_js_1.logger.info('Verifying payment', { orderId });
                 const userId = this.getUserId(req);
                 const result = await this.paymentService.verifyPayment(orderId, userId);
                 return res.status(200).json({
@@ -71,7 +77,7 @@ export class PaymentController {
                         message: 'QR code not found for this payment',
                     });
                 }
-                const qrPng = await QRCode.toBuffer(payment.qrString, {
+                const qrPng = await qrcode_1.default.toBuffer(payment.qrString, {
                     type: 'png',
                     errorCorrectionLevel: 'M',
                     width: 512,
@@ -95,7 +101,7 @@ export class PaymentController {
             }
             catch (error) {
                 const message = this.getErrorMessage(error);
-                logger.error('Bakong account check error', {
+                logger_js_1.logger.error('Bakong account check error', {
                     error: message,
                 });
                 return res.status(500).json({
@@ -115,7 +121,7 @@ export class PaymentController {
             }
             catch (error) {
                 const message = this.getErrorMessage(error);
-                logger.error('KHQR decode error', {
+                logger_js_1.logger.error('KHQR decode error', {
                     error: message,
                 });
                 return res.status(400).json({
@@ -142,10 +148,10 @@ export class PaymentController {
         return Number.isFinite(userId) && userId > 0 ? userId : 1;
     }
     validateCreatePaymentInput(input) {
-        return PaymentValidator.validateCreatePayment(input.orderId || '', input.amount, input.currency || 'KHR');
+        return validators_js_1.PaymentValidator.validateCreatePayment(input.orderId || '', input.amount, input.currency || 'KHR');
     }
     validateOrderId(orderId) {
-        return PaymentValidator.validateVerifyPayment(orderId);
+        return validators_js_1.PaymentValidator.validateVerifyPayment(orderId);
     }
     toCreatePaymentCommand(input) {
         return {
@@ -180,7 +186,7 @@ export class PaymentController {
     }
     handleCreatePaymentError(req, res, error) {
         const message = this.getErrorMessage(error);
-        logger.error('Payment creation error', {
+        logger_js_1.logger.error('Payment creation error', {
             orderId: req.body.orderId,
             error: message,
         });
@@ -194,18 +200,18 @@ export class PaymentController {
             return res.status(400).json({
                 success: false,
                 message,
-                ...(env.nodeEnv !== 'production' ? { error: message } : {}),
+                ...(env_js_1.env.nodeEnv !== 'production' ? { error: message } : {}),
             });
         }
         return res.status(500).json({
             success: false,
             message: 'Failed to create payment. Please try again later.',
-            ...(env.nodeEnv !== 'production' ? { error: message } : {}),
+            ...(env_js_1.env.nodeEnv !== 'production' ? { error: message } : {}),
         });
     }
     handlePaymentLookupError(req, res, error, logMessage, clientMessage) {
         const message = this.getErrorMessage(error);
-        logger.error(logMessage, {
+        logger_js_1.logger.error(logMessage, {
             orderId: req.params.orderId,
             error: message,
         });
@@ -227,4 +233,5 @@ export class PaymentController {
         return error instanceof Error ? error.message : String(error);
     }
 }
+exports.PaymentController = PaymentController;
 //# sourceMappingURL=PaymentController.js.map

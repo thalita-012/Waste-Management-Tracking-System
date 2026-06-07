@@ -9,4 +9,3 @@ export declare class AuthController {
     getProfile(req: AuthenticatedRequest, res: Response): Promise<Response<any, Record<string, any>>>;
 }
 export declare const authController: AuthController;
-//# sourceMappingURL=AuthController.d.ts.map

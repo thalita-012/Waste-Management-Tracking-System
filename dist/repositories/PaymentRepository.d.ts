@@ -29,7 +29,7 @@ export declare class PaymentRepository {
         khqrMd5: string | null;
         bakongTxId: string | null;
         status: string;
-    } | null>;
+    }>;
     refreshQr(orderId: string, data: {
         amount: number;
         currency: string;
@@ -84,4 +84,3 @@ export declare class PaymentRepository {
         status: string;
     }>;
 }
-//# sourceMappingURL=PaymentRepository.d.ts.map

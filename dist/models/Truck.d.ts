@@ -15,4 +15,3 @@ export declare class Truck {
         driverId: string;
     };
 }
-//# sourceMappingURL=Truck.d.ts.map

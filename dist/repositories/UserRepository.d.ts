@@ -13,4 +13,3 @@ export declare class UserRepository {
     delete(id: number): Promise<boolean>;
 }
 export declare const userRepository: UserRepository;
-//# sourceMappingURL=UserRepository.d.ts.map

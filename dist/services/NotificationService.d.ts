@@ -7,4 +7,3 @@ export declare class NotificationService {
     getUserNotifications(userId: number): NotificationModel[];
     private normalizeUserId;
 }
-//# sourceMappingURL=NotificationService.d.ts.map

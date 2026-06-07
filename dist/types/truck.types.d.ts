@@ -19,4 +19,3 @@ export interface UpdateStatusData {
     id: string;
     status: 'idle' | 'moving' | 'loading' | 'unloading' | 'offline' | 'arrived';
 }
-//# sourceMappingURL=truck.types.d.ts.map

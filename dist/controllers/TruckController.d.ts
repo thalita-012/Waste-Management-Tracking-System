@@ -7,4 +7,3 @@ export declare class TruckController {
     getTruckById: (req: Request, res: Response) => Promise<void>;
     updateTruckLocation: (req: Request, res: Response) => Promise<void>;
 }
-//# sourceMappingURL=TruckController.d.ts.map

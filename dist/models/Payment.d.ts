@@ -11,4 +11,3 @@ export type Payment = {
     createdAt: Date;
     updatedAt: Date;
 };
-//# sourceMappingURL=Payment.d.ts.map

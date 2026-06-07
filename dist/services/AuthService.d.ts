@@ -12,4 +12,3 @@ export declare class AuthService {
     } | null;
 }
 export declare const authService: AuthService;
-//# sourceMappingURL=AuthService.d.ts.map

@@ -1,4 +1,7 @@
-import 'dotenv/config';
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.getRequiredConfig = exports.env = void 0;
+require("dotenv/config");
 const getOptionalEnv = (name) => process.env[name]?.trim() || undefined;
 const getNumberEnv = (name, fallback) => {
     const value = getOptionalEnv(name);
@@ -15,7 +18,7 @@ const buildDatabaseUrl = () => {
     const credentials = password ? `${encodeDbPart(user)}:${encodeDbPart(password)}` : encodeDbPart(user);
     return `postgresql://${credentials}@${host}:${port}/${database}`;
 };
-export const env = {
+exports.env = {
     nodeEnv: getOptionalEnv('NODE_ENV') || 'development',
     port: getNumberEnv('PORT', 3000),
     jwtSecret: getOptionalEnv('JWT_SECRET') || 'your_fallback_secret',
@@ -39,10 +42,11 @@ export const env = {
         qrExpirationMinutes: getNumberEnv('BAKONG_QR_EXPIRATION_MINUTES', 5),
     },
 };
-export const getRequiredConfig = (name, value) => {
+const getRequiredConfig = (name, value) => {
     if (!value) {
         throw new Error(`${name} is required`);
     }
     return value;
 };
+exports.getRequiredConfig = getRequiredConfig;
 //# sourceMappingURL=env.js.map

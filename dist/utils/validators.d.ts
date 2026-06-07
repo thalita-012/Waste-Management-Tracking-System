@@ -14,4 +14,3 @@ export declare class PaymentValidator {
         errors: string[];
     };
 }
-//# sourceMappingURL=validators.d.ts.map

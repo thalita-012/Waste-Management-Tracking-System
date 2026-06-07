@@ -23,4 +23,3 @@ export declare class PaymentController {
     private isBakongError;
     private getErrorMessage;
 }
-//# sourceMappingURL=PaymentController.d.ts.map

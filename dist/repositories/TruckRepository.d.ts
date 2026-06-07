@@ -8,4 +8,3 @@ export declare class TruckRepository {
     updateStatus(id: number | string, status: string): Truck | undefined;
     delete(id: number | string): boolean;
 }
-//# sourceMappingURL=TruckRepository.d.ts.map
