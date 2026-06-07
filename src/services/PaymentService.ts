@@ -3,7 +3,7 @@ import { PaymentRepository } from '../repositories/PaymentRepository.js';
 import { NotificationService } from './NotificationService.js';
 import { logger } from '../utils/logger.js';
 import { createRequire } from 'module';
-
+import { BakongKHQR, khqrData, IndividualInfo, MerchantInfo } from 'bakong-khqr';
 // Correct way to import CommonJS module in ES module
 const require = createRequire(import.meta.url);
 const BakongModule = require('bakong-khqr');
