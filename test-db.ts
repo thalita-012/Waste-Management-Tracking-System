@@ -1,23 +1,37 @@
-import { prisma } from './src/utils/prisma.js';
+import { PrismaClient } from '@prisma/client';
+
+// Load .env file
+import dotenv from 'dotenv';
+dotenv.config();
+
+const prisma = new PrismaClient();
 
 async function testPrisma() {
   console.log('Testing Prisma connection...');
+  console.log('DATABASE_URL exists:', !!process.env.DATABASE_URL);
+  
   try {
-    // Try to count payments (should be 0 or more, but shouldn't throw)
-    const count = await prisma.payment.count();
-    console.log(`Successfully connected to DB via Prisma. Current payment count: ${count}`);
+    await prisma.$connect();
+    console.log('✅ Successfully connected to DB via Prisma');
     
-    // Test model structure by attempting a dry-run find (if table exists)
-    await prisma.user.findFirst();
-    console.log('User model verified in schema.');
+    const result: any = await prisma.$queryRaw`SELECT NOW() as current_time`;
+    console.log('📅 Database server time:', result[0].current_time);
     
+    const tables: any = await prisma.$queryRaw`
+      SELECT table_name 
+      FROM information_schema.tables 
+      WHERE table_schema = 'public'
+    `;
+    
+    const tableNames = tables.map((t: any) => t.table_name).join(', ');
+    console.log('📊 Tables in database:', tableNames || 'none');
+    
+    await prisma.$disconnect();
     process.exit(0);
+    
   } catch (error: any) {
-    console.error('Prisma test failed!');
-    console.error('Error:', error.message);
-    if (error.message.includes('does not exist')) {
-      console.log('Hint: You might need to run "npx prisma db push" to create the tables.');
-    }
+    console.error('❌ Error:', error.message);
+    await prisma.$disconnect();
     process.exit(1);
   }
 }

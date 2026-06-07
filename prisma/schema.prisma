@@ -7,22 +7,22 @@ datasource db {
 }
 
 model User {
-  id            Int            @id @default(autoincrement())
-  name          String?
-  email         String?        @unique
-  password      String?
-  phoneNumber   String?
-  address       String?
-  profilePicture String?
-  latitude      Float?
-  longitude     Float?
-  passwordResetToken String?
+  id                     Int            @id @default(autoincrement())
+  name                   String?
+  email                  String?        @unique
+  password               String?
+  phoneNumber            String?
+  address                String?
+  profilePicture         String?
+  latitude               Float?
+  longitude              Float?
+  passwordResetToken     String?
   passwordResetExpiresAt DateTime?
-  role          String         @default("USER")
-  createdAt     DateTime       @default(now())
-  updatedAt     DateTime       @updatedAt
-  trucks        Truck[]        @relation("DriverTrucks")
-  notifications Notification[]
+  role                   String         @default("USER")
+  createdAt              DateTime       @default(now())
+  updatedAt              DateTime       @updatedAt
+  notifications          Notification[]
+  trucks                 Truck[]        @relation("DriverTrucks")
 }
 
 model Truck {
@@ -31,19 +31,19 @@ model Truck {
   liveLocation String   @default("")
   status       String   @default("offline")
   driverId     Int?
-  driver       User?    @relation("DriverTrucks", fields: [driverId], references: [id])
   createdAt    DateTime @default(now())
   updatedAt    DateTime @updatedAt
+  driver       User?    @relation("DriverTrucks", fields: [driverId], references: [id])
 }
 
 model Notification {
   id        Int      @id @default(autoincrement())
   userId    Int
-  user      User     @relation(fields: [userId], references: [id])
   message   String
   status    String   @default("UNREAD")
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+  user      User     @relation(fields: [userId], references: [id])
 }
 
 model Payment {
