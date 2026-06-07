@@ -3,13 +3,13 @@ import { PaymentRepository } from '../repositories/PaymentRepository.js';
 import { NotificationService } from './NotificationService.js';
 import { logger } from '../utils/logger.js';
 
+// Fix for BakongKHQR - using require for CommonJS compatibility
 // @ts-ignore
-import * as BakongModule from 'bakong-khqr';
-
-const BakongKHQR = (BakongModule as any).default || BakongModule;
-const IndividualInfo = (BakongModule as any).IndividualInfo;
-const MerchantInfo = (BakongModule as any).MerchantInfo;
-const khqrData = (BakongModule as any).khqrData;
+const BakongKHQRModule = require('bakong-khqr');
+const BakongKHQR = BakongKHQRModule.default || BakongKHQRModule;
+const IndividualInfo = BakongKHQRModule.IndividualInfo;
+const MerchantInfo = BakongKHQRModule.MerchantInfo;
+const khqrData = BakongKHQRModule.khqrData;
 
 type KhqrGenerateData = {
   qr: string;
